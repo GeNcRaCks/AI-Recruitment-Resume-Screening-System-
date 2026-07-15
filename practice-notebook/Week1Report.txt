@@ -1,0 +1,4 @@
+In this week I explored basic python programming, its fundamentals and key concepts.
+I also explored Pandas and Numpy libraries and practiced how they are used to handle data and it's processing.
+I also explored Natural Language Processing fundamentals such as spaCy and NER and how they are used to process text such as tokenization, lemmatization, stopword removal, POS tagging, and more.
+some practiced code examples are in notebook-1.
