@@ -1,0 +1,49 @@
+Job Title: Software Engineering Intern
+
+Location: Remote (Preference for candidates based in Pakistan/EST Time Zone)
+
+Company: TechNova Solutions
+
+Type: Internship (Summer 2026) - 3 months, with potential for full-time conversion.
+
+About the Role:
+TechNova Solutions is a dynamic technology firm seeking passionate and talented Software Engineering students for our paid Summer 2026 Internship Program. This is a hands-on opportunity to work on real-world projects, collaborate with experienced engineers, and contribute to our product development lifecycle. You will be immersed in a fast-paced, technology-driven environment where your contributions will have a direct impact. We are looking for individuals who are not only strong coders but also innovative problem-solvers.
+
+Key Projects/Responsibilities:
+
+Full-Stack Development: Work on both frontend and backend components of web applications using React.js, Python, and Java.
+
+AI/ML Integration: Assist in developing AI-powered features, such as a content verification system or an image generation application, by working with APIs and training data.
+
+Security Focus: Contribute to projects requiring a strong understanding of encryption, networking, and secure coding practices.
+
+Collaboration: Participate in all stages of the software development lifecycle, from planning and design to testing and deployment. Use tools like Git, Jira, and Figma to collaborate with the team.
+
+Required Qualifications:
+
+Education: Currently enrolled in a Bachelor's degree program in Software Engineering, Computer Science, or a related field. Must have completed at least the 4th semester and be in the final year or graduating by Summer 2027.
+
+GPA: A minimum CGPA of 3.3/4.0 is required.
+
+Technical Skills:
+
+Strong programming skills in Python, Java, and JavaScript.
+
+Experience with frameworks such as React.js and familiarity with full-stack development.
+
+Solid understanding of core computer science concepts (OOP, Data Structures, Algorithms).
+
+Knowledge of networking, cybersecurity concepts, and/or machine learning is a strong plus.
+
+Portfolio: Practical experience via academic or personal projects is a must. Please include links to your GitHub or portfolio in your application.
+
+What We Offer:
+
+A competitive stipend.
+
+Mentorship from industry professionals.
+
+A flexible remote working environment.
+
+A chance to work on impactful projects that will enhance your portfolio and launch your career in tech.
+
