@@ -1,0 +1,40 @@
+SYED MUHAMMAD ALI RAZA
+BS Software Engineering Student | Aspiring Software Engineer
+Phone: +92-327-6500914 | Email: alijafry005@gmail.com
+Current Address: House No. 67, street No. 2, Razzaq Valley Expressway Islamabad
+Permanent Address: Chak Abdul Khaliq, Tehsil Dina, District Jhelum
+LinkedIn: https://www.linkedin.com/in/syed-m-ali-raza-731772340/ | GitHub: https://github.com/GeNcRaCks 
+Discipline
+BS Software Engineering
+Current Semester
+6th Semester
+CGPA
+3.87 / 4.00
+University
+Capital University of Science & Technology, Islamabad
+PROFILE Summary
+I am a passionate Software Engineering student with hands-on experience across web development, automated testing, networking, and machine learning. Comfortable working in high-security, enterprise-style environments through academic and personal projects, with a growing focus on agentic AI systems. Seeking a hands-on internship to apply technical skills to real operational and project work in a complex, technology-driven enterprise setting.
+Education
+BS Software Engineering — Capital University of Science & Technology, Islamabad
+2023 – Present | 6th Semester | CGPA: 3.87 / 4.00
+FSc Pre-Engineering — Punjab College, Dina
+2021 – 2023
+Technical Skills
+Programming Languages: Python, Java, JavaScript, C++
+Web Development: HTML, CSS, Bootstrap, React
+Databases: MySQL
+Testing & Tools: Automated Testing (Selenium, Jest), Networking (Cisco), Unity Engine
+Emerging Tech: Machine Learning, Agentic AI Systems
+WORK EXPERIENCE
+Volunteer, In-Service (ITP- Islamabad Traffic Police)
+July 2025
+PROJECTS
+FactCheck AI — AI-powered fake news detection tool
+Imagify — AI image generator application
+Secure Chatting Application — Encrypted messaging platform built in Python
+GymTrack & Fitness Tracking System — Web applications for fitness monitoring and gym management
+BakeHouse — Bakery management and online ordering system
+2D Traffic Racer Game — Built using Unity Engine
+The Gun Vault — Website project
+LANGUAGES
+English, Urdu, Punjabi

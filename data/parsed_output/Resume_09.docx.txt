@@ -1,0 +1,44 @@
+SEHAR MUJTABA
+Software Engineering Student · BSE 6th Semester (CGPA 3.36) · NUST
+CONTACT
+ 03271234567
+ seharmujtaba0012@gmail.com
+ github.com/SeharMujtaba
+EDUCATION
+Bachelor of Software Engineering
+Capital University of Science
+& Technology (CUST)
+ 6th Semester
+ Expected: 2027
+TOOLS
+ VS Code
+ Unity Hub
+ Jira (Project Mgmt)
+ Kali Linux
+ Cisco Packet Tracer
+REFERENCES
+Available upon request.
+PROFESSIONAL OBJECTIVE
+Motivated and detail-oriented Software Engineering student with a strong foundation in programming, networking, and problem-solving. Actively seeking an internship opportunity to apply academic knowledge in real-world environments, contribute to innovative software solutions, and gain meaningful hands-on industry experience.
+TECHNICAL SKILLS
+Programming Languages
+C++ | OOP
+Java | Apps
+Python | Scripting
+Web Technologies
+HTML & CSS
+AngularJS
+Networking & Security
+Cisco Packet Tracer
+Kali Linux
+Design & Creative
+Graphic Designing
+EXPERIENCE
+Academic & Independent Projects
+Ongoing | Self-directed
+Actively developing technical and academic projects demonstrating practical application of software engineering principles, networking concepts, and programming skills. Each project bridges classroom theory with real-world problem-solving.
+RELEVANT COURSEWORK
+Data Structures & Algorithms
+Database Systems
+Software Engineering Principles
+Computer Networks

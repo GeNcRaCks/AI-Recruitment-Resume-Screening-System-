@@ -1,0 +1,39 @@
+P R O F E S S I O N A L S U M M A R Y
+Final-year Software Engineering student at CUST with proven project experience across full-stack development, AI integration, and cybersecurity. Skilled in React.js, Python, Java, and C++. Looking to apply hands-on technical skills in a Software Engineering Internship and contribute to real-world products.
+E D U C A T I O N
+B.S. Software Engineering
+Capital University of Science & Technology (CUST)
+Expected 2027
+CGPA: 3.44 / 4.00
+T E C H N I C A L S K I L L S
+Languages
+C++, Java, Python, JavaScript
+Frontend
+React.js, HTML, CSS
+Database
+MySQL
+Tools
+Git, GitHub, VS Code, Figma, Unity
+Concepts
+OOP · Data Structures · Software Engineering · Infomation Security · Computer Networks
+P R O J E C T S
+AI-Powered Fake News Verification System
+React.js · LLM APIs
+Integrated LLM APIs with trusted news sources to verify multilingual claims with evidence-based validation and a responsive React frontend.
+End-to-End Encrypted Chat Application
+Python · RSA · AES
+Built a secure CLI messaging app using RSA key exchange and AES encryption for full message confidentiality and integrity.
+AI Image Generation Web App
+React.js · Image-Gen API
+Wired a third-party image-generation API into a React frontend with user auth, responsive UI, and clean component architecture.
+2D Racing Game
+Unity · C#
+Developed player controls, collision detection, and game-loop mechanics; applied computer graphics principles throughout.
+UI/UX Prototyping
+Figma
+Designed wireframes and interactive high-fidelity prototypes with complete user flows using user-centered design principles.
+C O U R S E W O R K H I G H L I G H T S
++92 310 192 8319 | usman.meh@hotmail.com | LinkedIn: www.linkedin.com/in/usman-mehmood-bng777 | github.com/UsmanMehmood777
+USMAN MEHMOOD Software Engineering Undergraduate - CUST, Islamabad
++92 310 192 8319 | usman.meh@hotmail.com | LinkedIn: www.linkedin.com/in/usman-mehmood-bng777 | github.com/UsmanMehmood777
+USMAN MEHMOOD Software Engineering Undergraduate - CUST, Islamabad
