@@ -1,0 +1,11 @@
+candidate,skills_found,matched_to_jd,missing_skills,match_count
+Resume_10.docx.txt,"['C#', 'C++', 'CSS', 'Figma', 'Git', 'HTML', 'Java', 'JavaScript', 'MySQL', 'Python', 'React', 'UI/UX Design', 'Wireframing']","['Figma', 'Git', 'Java', 'JavaScript', 'Python', 'React']","['Jira', 'Machine Learning']",6
+Resume_06.docx.txt,"['Bootstrap', 'C++', 'CSS', 'HTML', 'Java', 'JavaScript', 'Machine Learning', 'MySQL', 'Python', 'React', 'Selenium']","['Java', 'JavaScript', 'Machine Learning', 'Python', 'React']","['Figma', 'Git', 'Jira']",5
+Resume_09.docx.txt,"['C++', 'CSS', 'HTML', 'Java', 'Jira', 'Linux', 'Problem Solving', 'Python']","['Java', 'Jira', 'Python']","['Figma', 'Git', 'JavaScript', 'Machine Learning', 'React']",3
+Resume_02.pdf.txt,"['Adobe Illustrator', 'Adobe Photoshop', 'Market Research', 'React']",['React'],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python']",1
+Resume_01.pdf.txt,"['Brand Management', 'Leadership', 'Project Management']",[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0
+Resume_03.pdf.txt,[],[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0
+Resume_05.pdf.txt,['Kanban'],[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0
+Resume_04.pdf.txt,[],[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0
+Resume_08.docx.txt,[],[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0
+Resume_07.docx.txt,[],[],"['Figma', 'Git', 'Java', 'JavaScript', 'Jira', 'Machine Learning', 'Python', 'React']",0

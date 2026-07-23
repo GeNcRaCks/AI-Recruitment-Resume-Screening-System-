@@ -1,0 +1,134 @@
+{
+  "programming": {
+    "Python": ["Python", "Python3"],
+    "Java": ["Java"],
+    "JavaScript": ["JavaScript", "JS"],
+    "TypeScript": ["TypeScript", "TS"],
+    "C++": ["C++", "CPP"],
+    "C#": ["C#", "C Sharp"],
+    "SQL": ["SQL"],
+    "R Programming": ["R Programming", "R Language"],
+    "Golang": ["Golang", "Go Programming"],
+    "PHP": ["PHP"],
+    "Swift": ["Swift"],
+    "Kotlin": ["Kotlin"]
+  },
+  "data_ml": {
+    "Machine Learning": ["Machine Learning", "ML"],
+    "Deep Learning": ["Deep Learning", "DL"],
+    "Natural Language Processing": ["Natural Language Processing", "NLP"],
+    "Computer Vision": ["Computer Vision", "CV"],
+    "Pandas": ["Pandas"],
+    "NumPy": ["NumPy"],
+    "TensorFlow": ["TensorFlow"],
+    "PyTorch": ["PyTorch"],
+    "Scikit-learn": ["Scikit-learn", "sklearn"],
+    "Data Analysis": ["Data Analysis"],
+    "Data Visualization": ["Data Visualization"],
+    "Statistics": ["Statistics", "Statistical Analysis"],
+    "spaCy": ["spaCy"],
+    "Hugging Face Transformers": ["Hugging Face", "Transformers", "Hugging Face Transformers"],
+    "A/B Testing": ["A/B Testing", "AB Testing"]
+  },
+  "web": {
+    "React": ["React", "React.js", "ReactJS"],
+    "Node.js": ["Node.js", "NodeJS", "Node"],
+    "Django": ["Django"],
+    "Flask": ["Flask"],
+    "FastAPI": ["FastAPI"],
+    "REST API": ["REST API", "RESTful API", "REST APIs"],
+    "GraphQL": ["GraphQL"],
+    "HTML": ["HTML", "HTML5"],
+    "CSS": ["CSS", "CSS3"],
+    "Next.js": ["Next.js", "NextJS"],
+    "Vue.js": ["Vue.js", "VueJS", "Vue"],
+    "Angular": ["Angular"],
+    "Tailwind CSS": ["Tailwind CSS", "Tailwind"],
+    "Bootstrap": ["Bootstrap"]
+  },
+  "cloud_devops": {
+    "AWS": ["AWS", "Amazon Web Services"],
+    "Azure": ["Azure", "Microsoft Azure"],
+    "Google Cloud Platform": ["Google Cloud Platform", "GCP"],
+    "Docker": ["Docker"],
+    "Kubernetes": ["Kubernetes", "K8s"],
+    "CI/CD": ["CI/CD", "CI CD", "Continuous Integration"],
+    "Git": ["Git"],
+    "GitHub Actions": ["GitHub Actions"],
+    "Terraform": ["Terraform"],
+    "Jenkins": ["Jenkins"],
+    "Linux": ["Linux"],
+    "Bash Scripting": ["Bash Scripting", "Bash", "Shell Scripting"]
+  },
+  "databases": {
+    "PostgreSQL": ["PostgreSQL", "Postgres"],
+    "MySQL": ["MySQL"],
+    "MongoDB": ["MongoDB", "Mongo"],
+    "Redis": ["Redis"],
+    "SQLite": ["SQLite"],
+    "Elasticsearch": ["Elasticsearch"],
+    "Firebase": ["Firebase"],
+    "Oracle Database": ["Oracle Database", "Oracle DB"]
+  },
+  "tools_pm": {
+    "Jira": ["Jira"],
+    "Confluence": ["Confluence"],
+    "Figma": ["Figma"],
+    "Postman": ["Postman"],
+    "Agile Methodology": ["Agile", "Agile Methodology", "Scrum"],
+    "Kanban": ["Kanban"],
+    "Project Management": ["Project Management"],
+    "JIRA Administration": ["JIRA Administration"]
+  },
+  "testing": {
+    "Unit Testing": ["Unit Testing", "pytest", "unittest"],
+    "Integration Testing": ["Integration Testing"],
+    "Test Automation": ["Test Automation"],
+    "Selenium": ["Selenium"],
+    "Cypress": ["Cypress"]
+  },
+  "soft_skills": {
+    "Communication": ["Communication", "Communication Skills"],
+    "Leadership": ["Leadership"],
+    "Problem Solving": ["Problem Solving", "Problem-Solving"],
+    "Teamwork": ["Teamwork", "Team Collaboration"],
+    "Time Management": ["Time Management"],
+    "Critical Thinking": ["Critical Thinking"],
+    "Adaptability": ["Adaptability"],
+    "Attention to Detail": ["Attention to Detail"],
+    "Analytical Thinking": ["Analytical Thinking", "Analytical Skills"]
+  },
+
+  "business_finance": {
+    "Financial Analysis": ["Financial Analysis", "Financial Modeling"],
+    "Accounting": ["Accounting", "Bookkeeping"],
+    "Excel": ["Excel", "Microsoft Excel", "Advanced Excel"],
+    "Budgeting": ["Budgeting", "Budget Planning"],
+    "Business Analysis": ["Business Analysis", "Business Analytics"],
+    "Financial Reporting": ["Financial Reporting"],
+    "Risk Management": ["Risk Management"],
+    "Forecasting": ["Forecasting", "Sales Forecasting"]
+  },
+  "marketing_sales": {
+    "SEO": ["SEO", "Search Engine Optimization"],
+    "Content Marketing": ["Content Marketing", "Content Strategy"],
+    "Social Media Marketing": ["Social Media Marketing", "Social Media Management"],
+    "Digital Marketing": ["Digital Marketing"],
+    "Email Marketing": ["Email Marketing"],
+    "Google Analytics": ["Google Analytics"],
+    "CRM Software": ["CRM", "Salesforce", "HubSpot"],
+    "Sales Strategy": ["Sales Strategy", "Sales Development"],
+    "Market Research": ["Market Research"],
+    "Brand Management": ["Brand Management", "Branding"]
+  },
+  "design": {
+    "UI/UX Design": ["UI/UX", "UX Design", "UI Design", "User Experience Design"],
+    "Adobe Photoshop": ["Photoshop", "Adobe Photoshop"],
+    "Adobe Illustrator": ["Illustrator", "Adobe Illustrator"],
+    "Figma": ["Figma"],
+    "Graphic Design": ["Graphic Design"],
+    "Wireframing": ["Wireframing", "Prototyping"],
+    "Adobe XD": ["Adobe XD"],
+    "Canva": ["Canva"]
+  }
+}
