@@ -2,7 +2,7 @@ import os
 from src.nlp.skill_extraction import load_skills_db, build_matcher, extract_skills
 from src.scoring.rank_by_skills import rank_candidates_by_skills
 
-jd_text = open("data/job_descriptions/jd_3.txt", encoding="utf-8").read()
+jd_text = open("data/job_descriptions/jd_2.txt", encoding="utf-8").read()
 
 skills_db = load_skills_db()
 matcher = build_matcher(skills_db)

@@ -1,134 +1,1643 @@
 {
   "programming": {
-    "Python": ["Python", "Python3"],
-    "Java": ["Java"],
-    "JavaScript": ["JavaScript", "JS"],
-    "TypeScript": ["TypeScript", "TS"],
-    "C++": ["C++", "CPP"],
-    "C#": ["C#", "C Sharp"],
-    "SQL": ["SQL"],
-    "R Programming": ["R Programming", "R Language"],
-    "Golang": ["Golang", "Go Programming"],
-    "PHP": ["PHP"],
-    "Swift": ["Swift"],
-    "Kotlin": ["Kotlin"]
+    "Python": [
+      "Python",
+      "Python3"
+    ],
+    "Java": [
+      "Java"
+    ],
+    "JavaScript": [
+      "JavaScript",
+      "JS"
+    ],
+    "TypeScript": [
+      "TypeScript",
+      "TS"
+    ],
+    "C++": [
+      "C++",
+      "CPP"
+    ],
+    "C#": [
+      "C#",
+      "C Sharp"
+    ],
+    "SQL": [
+      "SQL"
+    ],
+    "R Programming": [
+      "R Programming",
+      "R Language"
+    ],
+    "Golang": [
+      "Golang",
+      "Go Programming"
+    ],
+    "PHP": [
+      "PHP"
+    ],
+    "Swift": [
+      "Swift"
+    ],
+    "Kotlin": [
+      "Kotlin"
+    ],
+    "Rust": [
+      "Rust Programming"
+    ],
+    "MATLAB": [
+      "MATLAB"
+    ],
+    "Scala": [
+      "Scala"
+    ],
+    "Ruby": [
+      "Ruby"
+    ],
+    "Object-Oriented Programming": [
+      "OOP",
+      "Object-Oriented Programming",
+      "Object Oriented Programming"
+    ],
+    "Data Structures and Algorithms": [
+      "Data Structures",
+      "Algorithms",
+      "Data Structures and Algorithms",
+      "DSA"
+    ]
   },
-  "data_ml": {
-    "Machine Learning": ["Machine Learning", "ML"],
-    "Deep Learning": ["Deep Learning", "DL"],
-    "Natural Language Processing": ["Natural Language Processing", "NLP"],
-    "Computer Vision": ["Computer Vision", "CV"],
-    "Pandas": ["Pandas"],
-    "NumPy": ["NumPy"],
-    "TensorFlow": ["TensorFlow"],
-    "PyTorch": ["PyTorch"],
-    "Scikit-learn": ["Scikit-learn", "sklearn"],
-    "Data Analysis": ["Data Analysis"],
-    "Data Visualization": ["Data Visualization"],
-    "Statistics": ["Statistics", "Statistical Analysis"],
-    "spaCy": ["spaCy"],
-    "Hugging Face Transformers": ["Hugging Face", "Transformers", "Hugging Face Transformers"],
-    "A/B Testing": ["A/B Testing", "AB Testing"]
+  "data_ml_ai": {
+    "Machine Learning": [
+      "Machine Learning",
+      "ML"
+    ],
+    "Deep Learning": [
+      "Deep Learning",
+      "DL"
+    ],
+    "Natural Language Processing": [
+      "Natural Language Processing",
+      "NLP"
+    ],
+    "Computer Vision": [
+      "Computer Vision",
+      "CV"
+    ],
+    "Pandas": [
+      "Pandas"
+    ],
+    "NumPy": [
+      "NumPy"
+    ],
+    "TensorFlow": [
+      "TensorFlow"
+    ],
+    "PyTorch": [
+      "PyTorch"
+    ],
+    "Scikit-learn": [
+      "Scikit-learn",
+      "sklearn"
+    ],
+    "Data Analysis": [
+      "Data Analysis"
+    ],
+    "Data Visualization": [
+      "Data Visualization"
+    ],
+    "Statistics": [
+      "Statistics",
+      "Statistical Analysis"
+    ],
+    "spaCy": [
+      "spaCy"
+    ],
+    "Hugging Face Transformers": [
+      "Hugging Face",
+      "Transformers",
+      "Hugging Face Transformers"
+    ],
+    "A/B Testing": [
+      "A/B Testing",
+      "AB Testing"
+    ],
+    "Power BI": [
+      "Power BI"
+    ],
+    "Tableau": [
+      "Tableau"
+    ],
+    "Big Data": [
+      "Big Data"
+    ],
+    "Apache Spark": [
+      "Apache Spark",
+      "Spark"
+    ],
+    "Data Engineering": [
+      "Data Engineering"
+    ],
+    "Data Warehousing": [
+      "Data Warehousing",
+      "Data Warehouse"
+    ],
+    "ETL": [
+      "ETL",
+      "Extract Transform Load"
+    ]
   },
-  "web": {
-    "React": ["React", "React.js", "ReactJS"],
-    "Node.js": ["Node.js", "NodeJS", "Node"],
-    "Django": ["Django"],
-    "Flask": ["Flask"],
-    "FastAPI": ["FastAPI"],
-    "REST API": ["REST API", "RESTful API", "REST APIs"],
-    "GraphQL": ["GraphQL"],
-    "HTML": ["HTML", "HTML5"],
-    "CSS": ["CSS", "CSS3"],
-    "Next.js": ["Next.js", "NextJS"],
-    "Vue.js": ["Vue.js", "VueJS", "Vue"],
-    "Angular": ["Angular"],
-    "Tailwind CSS": ["Tailwind CSS", "Tailwind"],
-    "Bootstrap": ["Bootstrap"]
+  "web_development": {
+    "React": [
+      "React",
+      "React.js",
+      "ReactJS"
+    ],
+    "Node.js": [
+      "Node.js",
+      "NodeJS",
+      "Node"
+    ],
+    "Django": [
+      "Django"
+    ],
+    "Flask": [
+      "Flask"
+    ],
+    "FastAPI": [
+      "FastAPI"
+    ],
+    "REST API": [
+      "REST API",
+      "RESTful API",
+      "REST APIs"
+    ],
+    "GraphQL": [
+      "GraphQL"
+    ],
+    "HTML": [
+      "HTML",
+      "HTML5"
+    ],
+    "CSS": [
+      "CSS",
+      "CSS3"
+    ],
+    "Next.js": [
+      "Next.js",
+      "NextJS"
+    ],
+    "Vue.js": [
+      "Vue.js",
+      "VueJS",
+      "Vue"
+    ],
+    "Angular": [
+      "Angular"
+    ],
+    "Tailwind CSS": [
+      "Tailwind CSS",
+      "Tailwind"
+    ],
+    "Bootstrap": [
+      "Bootstrap"
+    ],
+    "Full-Stack Development": [
+      "Full-Stack Development",
+      "Full Stack Development",
+      "Full-Stack"
+    ],
+    "WordPress": [
+      "WordPress"
+    ]
+  },
+  "mobile_development": {
+    "Android Development": [
+      "Android Development",
+      "Android"
+    ],
+    "iOS Development": [
+      "iOS Development",
+      "iOS"
+    ],
+    "React Native": [
+      "React Native"
+    ],
+    "Flutter": [
+      "Flutter"
+    ],
+    "SwiftUI": [
+      "SwiftUI"
+    ]
   },
   "cloud_devops": {
-    "AWS": ["AWS", "Amazon Web Services"],
-    "Azure": ["Azure", "Microsoft Azure"],
-    "Google Cloud Platform": ["Google Cloud Platform", "GCP"],
-    "Docker": ["Docker"],
-    "Kubernetes": ["Kubernetes", "K8s"],
-    "CI/CD": ["CI/CD", "CI CD", "Continuous Integration"],
-    "Git": ["Git"],
-    "GitHub Actions": ["GitHub Actions"],
-    "Terraform": ["Terraform"],
-    "Jenkins": ["Jenkins"],
-    "Linux": ["Linux"],
-    "Bash Scripting": ["Bash Scripting", "Bash", "Shell Scripting"]
+    "AWS": [
+      "AWS",
+      "Amazon Web Services"
+    ],
+    "Azure": [
+      "Azure",
+      "Microsoft Azure"
+    ],
+    "Google Cloud Platform": [
+      "Google Cloud Platform",
+      "GCP"
+    ],
+    "Docker": [
+      "Docker"
+    ],
+    "Kubernetes": [
+      "Kubernetes",
+      "K8s"
+    ],
+    "CI/CD": [
+      "CI/CD",
+      "CI CD",
+      "Continuous Integration"
+    ],
+    "Git": [
+      "Git"
+    ],
+    "GitHub Actions": [
+      "GitHub Actions"
+    ],
+    "Terraform": [
+      "Terraform"
+    ],
+    "Jenkins": [
+      "Jenkins"
+    ],
+    "Linux": [
+      "Linux"
+    ],
+    "Bash Scripting": [
+      "Bash Scripting",
+      "Bash",
+      "Shell Scripting"
+    ],
+    "System Administration": [
+      "System Administration",
+      "SysAdmin"
+    ]
   },
   "databases": {
-    "PostgreSQL": ["PostgreSQL", "Postgres"],
-    "MySQL": ["MySQL"],
-    "MongoDB": ["MongoDB", "Mongo"],
-    "Redis": ["Redis"],
-    "SQLite": ["SQLite"],
-    "Elasticsearch": ["Elasticsearch"],
-    "Firebase": ["Firebase"],
-    "Oracle Database": ["Oracle Database", "Oracle DB"]
+    "PostgreSQL": [
+      "PostgreSQL",
+      "Postgres"
+    ],
+    "MySQL": [
+      "MySQL"
+    ],
+    "MongoDB": [
+      "MongoDB",
+      "Mongo"
+    ],
+    "Redis": [
+      "Redis"
+    ],
+    "SQLite": [
+      "SQLite"
+    ],
+    "Elasticsearch": [
+      "Elasticsearch"
+    ],
+    "Firebase": [
+      "Firebase"
+    ],
+    "Oracle Database": [
+      "Oracle Database",
+      "Oracle DB"
+    ]
   },
-  "tools_pm": {
-    "Jira": ["Jira"],
-    "Confluence": ["Confluence"],
-    "Figma": ["Figma"],
-    "Postman": ["Postman"],
-    "Agile Methodology": ["Agile", "Agile Methodology", "Scrum"],
-    "Kanban": ["Kanban"],
-    "Project Management": ["Project Management"],
-    "JIRA Administration": ["JIRA Administration"]
+  "cybersecurity_networking": {
+    "Networking Fundamentals": [
+      "Computer Networking",
+      "Networking Fundamentals",
+      "TCP/IP"
+    ],
+    "Cybersecurity": [
+      "Cybersecurity",
+      "Cyber Security"
+    ],
+    "Encryption": [
+      "Encryption",
+      "Cryptography"
+    ],
+    "Penetration Testing": [
+      "Penetration Testing",
+      "Pen Testing"
+    ],
+    "Secure Coding Practices": [
+      "Secure Coding",
+      "Secure Coding Practices"
+    ],
+    "Firewall Management": [
+      "Firewall",
+      "Firewall Management"
+    ],
+    "Kali Linux": [
+      "Kali Linux"
+    ],
+    "Cisco Packet Tracer": [
+      "Cisco Packet Tracer"
+    ],
+    "Vulnerability Assessment": [
+      "Vulnerability Assessment"
+    ]
   },
-  "testing": {
-    "Unit Testing": ["Unit Testing", "pytest", "unittest"],
-    "Integration Testing": ["Integration Testing"],
-    "Test Automation": ["Test Automation"],
-    "Selenium": ["Selenium"],
-    "Cypress": ["Cypress"]
+  "testing_qa": {
+    "Unit Testing": [
+      "Unit Testing",
+      "pytest",
+      "unittest"
+    ],
+    "Integration Testing": [
+      "Integration Testing"
+    ],
+    "Test Automation": [
+      "Test Automation"
+    ],
+    "Selenium": [
+      "Selenium"
+    ],
+    "Cypress": [
+      "Cypress"
+    ],
+    "Manual Testing": [
+      "Manual Testing"
+    ],
+    "Quality Assurance": [
+      "Quality Assurance",
+      "QA"
+    ]
+  },
+  "game_development": {
+    "Unity": [
+      "Unity",
+      "Unity Hub",
+      "Unity3D"
+    ],
+    "Unreal Engine": [
+      "Unreal Engine"
+    ],
+    "Game Design": [
+      "Game Design"
+    ],
+    "3D Modeling": [
+      "3D Modeling",
+      "3D Modelling"
+    ]
+  },
+  "business_finance_accounting": {
+    "Financial Analysis": [
+      "Financial Analysis",
+      "Financial Modeling"
+    ],
+    "Accounting": [
+      "Accounting",
+      "Bookkeeping"
+    ],
+    "Excel": [
+      "Excel",
+      "Microsoft Excel",
+      "Advanced Excel"
+    ],
+    "Budgeting": [
+      "Budgeting",
+      "Budget Planning"
+    ],
+    "Business Analysis": [
+      "Business Analysis",
+      "Business Analytics"
+    ],
+    "Financial Reporting": [
+      "Financial Reporting"
+    ],
+    "Risk Management": [
+      "Risk Management"
+    ],
+    "Forecasting": [
+      "Forecasting",
+      "Sales Forecasting"
+    ],
+    "Auditing": [
+      "Auditing",
+      "Internal Audit"
+    ],
+    "Tax Preparation": [
+      "Tax Preparation",
+      "Tax Compliance"
+    ],
+    "P&L Management": [
+      "P&L Management",
+      "P&L Accountability",
+      "Profit and Loss Management"
+    ],
+    "Investment Analysis": [
+      "Investment Analysis"
+    ],
+    "QuickBooks": [
+      "QuickBooks"
+    ],
+    "SAP": [
+      "SAP",
+      "SAP ERP"
+    ]
+  },
+  "marketing_sales_crm": {
+    "SEO": [
+      "SEO",
+      "Search Engine Optimization"
+    ],
+    "Content Marketing": [
+      "Content Marketing",
+      "Content Strategy"
+    ],
+    "Social Media Marketing": [
+      "Social Media Marketing",
+      "Social Media Management"
+    ],
+    "Digital Marketing": [
+      "Digital Marketing"
+    ],
+    "Email Marketing": [
+      "Email Marketing"
+    ],
+    "Google Analytics": [
+      "Google Analytics"
+    ],
+    "CRM Software": [
+      "CRM",
+      "Salesforce",
+      "HubSpot",
+      "Client Relationship Management",
+      "Customer Relationship Management"
+    ],
+    "Sales Strategy": [
+      "Sales Strategy",
+      "Sales Development",
+      "Sales Planning"
+    ],
+    "Market Research": [
+      "Market Research"
+    ],
+    "Brand Management": [
+      "Brand Management",
+      "Branding"
+    ],
+    "B2B Sales": [
+      "B2B Sales",
+      "Business-to-Business Sales"
+    ],
+    "Key Account Management": [
+      "Key Account Management",
+      "Account Management",
+      "Key Accounts Manager",
+      "CKAM"
+    ],
+    "RFP Management": [
+      "RFP Management",
+      "Request for Proposal",
+      "RFP"
+    ],
+    "Contract Negotiation": [
+      "Contract Negotiation",
+      "Negotiation Skills",
+      "Negotiation"
+    ],
+    "Pipeline Management": [
+      "Pipeline Management",
+      "Sales Pipeline"
+    ],
+    "Cross-Selling and Upselling": [
+      "Cross-Selling",
+      "Upselling",
+      "Cross-Selling and Upselling"
+    ],
+    "Stakeholder Management": [
+      "Stakeholder Management"
+    ],
+    "Lead Generation": [
+      "Lead Generation"
+    ],
+    "Customer Retention": [
+      "Customer Retention"
+    ]
+  },
+  "design_creative": {
+    "UI/UX Design": [
+      "UI/UX",
+      "UX Design",
+      "UI Design",
+      "User Experience Design"
+    ],
+    "Adobe Photoshop": [
+      "Photoshop",
+      "Adobe Photoshop"
+    ],
+    "Adobe Illustrator": [
+      "Illustrator",
+      "Adobe Illustrator"
+    ],
+    "Figma": [
+      "Figma"
+    ],
+    "Graphic Design": [
+      "Graphic Design"
+    ],
+    "Wireframing": [
+      "Wireframing",
+      "Prototyping"
+    ],
+    "Adobe XD": [
+      "Adobe XD"
+    ],
+    "Canva": [
+      "Canva"
+    ],
+    "Video Editing": [
+      "Video Editing"
+    ],
+    "Adobe Premiere Pro": [
+      "Premiere Pro",
+      "Adobe Premiere Pro"
+    ]
+  },
+  "project_management_tools": {
+    "Jira": [
+      "Jira"
+    ],
+    "Confluence": [
+      "Confluence"
+    ],
+    "Postman": [
+      "Postman"
+    ],
+    "Agile Methodology": [
+      "Agile",
+      "Agile Methodology",
+      "Scrum"
+    ],
+    "Kanban": [
+      "Kanban"
+    ],
+    "Project Management": [
+      "Project Management"
+    ],
+    "Scrum Master": [
+      "Scrum Master",
+      "Certified Scrum Master",
+      "CSM"
+    ],
+    "PMP Certification": [
+      "PMP",
+      "Project Management Professional"
+    ],
+    "Trello": [
+      "Trello"
+    ],
+    "Microsoft Project": [
+      "Microsoft Project",
+      "MS Project"
+    ],
+    "Waterfall Methodology": [
+      "Waterfall",
+      "Waterfall Methodology"
+    ]
+  },
+  "logistics_supply_chain": {
+    "Supply Chain Management": [
+      "Supply Chain Management",
+      "Supply Chain"
+    ],
+    "Warehouse Management System": [
+      "WMS",
+      "Warehouse Management System"
+    ],
+    "ERP Systems": [
+      "ERP",
+      "ERP Systems",
+      "Enterprise Resource Planning"
+    ],
+    "Inventory Management": [
+      "Inventory Management",
+      "Inventory Control"
+    ],
+    "Logistics Coordination": [
+      "Logistics",
+      "Logistics Coordination"
+    ],
+    "Forklift Certification": [
+      "Forklift Certification",
+      "Certified Forklift Driver",
+      "Forklift Operation"
+    ],
+    "Lean Methodology": [
+      "Lean Methodology",
+      "Lean Manufacturing",
+      "5S Methodology",
+      "5S"
+    ],
+    "Cycle Counting": [
+      "Cycle Counts",
+      "Cycle Counting"
+    ],
+    "Loss Prevention": [
+      "Loss Prevention"
+    ],
+    "Distribution Center Operations": [
+      "Distribution Center Operations",
+      "Warehouse Operations"
+    ],
+    "Procurement": [
+      "Procurement",
+      "Purchasing"
+    ],
+    "Demand Planning": [
+      "Demand Planning"
+    ],
+    "Fleet Management": [
+      "Fleet Management"
+    ]
+  },
+  "human_resources": {
+    "Recruitment": [
+      "Recruitment",
+      "Talent Acquisition"
+    ],
+    "Employee Relations": [
+      "Employee Relations"
+    ],
+    "Onboarding": [
+      "Onboarding"
+    ],
+    "Performance Management": [
+      "Performance Management"
+    ],
+    "HRIS": [
+      "HRIS",
+      "Human Resources Information System"
+    ],
+    "Compensation and Benefits": [
+      "Compensation and Benefits",
+      "Payroll"
+    ],
+    "Talent Development": [
+      "Talent Development"
+    ],
+    "Employee Training": [
+      "Employee Training",
+      "Training and Development"
+    ],
+    "Conflict Resolution": [
+      "Conflict Resolution"
+    ]
+  },
+  "customer_service": {
+    "Customer Support": [
+      "Customer Support",
+      "Customer Service"
+    ],
+    "Help Desk Support": [
+      "Help Desk",
+      "Help Desk Support",
+      "Technical Support"
+    ],
+    "Call Center Operations": [
+      "Call Center",
+      "Call Center Operations"
+    ],
+    "Client Onboarding": [
+      "Client Onboarding"
+    ],
+    "Complaint Resolution": [
+      "Complaint Resolution",
+      "Escalation Management"
+    ],
+    "Live Chat Support": [
+      "Live Chat Support"
+    ]
+  },
+  "healthcare_medical": {
+    "Patient Care": [
+      "Patient Care"
+    ],
+    "Clinical Documentation": [
+      "Clinical Documentation"
+    ],
+    "Electronic Health Records": [
+      "EHR",
+      "Electronic Health Records",
+      "EMR",
+      "Electronic Medical Records"
+    ],
+    "Medical Terminology": [
+      "Medical Terminology"
+    ],
+    "Nursing": [
+      "Nursing",
+      "Registered Nurse",
+      "RN"
+    ],
+    "Phlebotomy": [
+      "Phlebotomy"
+    ],
+    "CPR Certification": [
+      "CPR Certification",
+      "CPR Certified",
+      "Basic Life Support",
+      "BLS"
+    ],
+    "HIPAA Compliance": [
+      "HIPAA",
+      "HIPAA Compliance"
+    ],
+    "Medical Billing and Coding": [
+      "Medical Billing",
+      "Medical Coding",
+      "Medical Billing and Coding",
+      "ICD-10"
+    ],
+    "Pharmacology": [
+      "Pharmacology"
+    ],
+    "Diagnostic Imaging": [
+      "Diagnostic Imaging",
+      "Radiology"
+    ]
+  },
+  "education_teaching": {
+    "Curriculum Development": [
+      "Curriculum Development",
+      "Curriculum Design"
+    ],
+    "Lesson Planning": [
+      "Lesson Planning"
+    ],
+    "Classroom Management": [
+      "Classroom Management"
+    ],
+    "Student Assessment": [
+      "Student Assessment",
+      "Grading"
+    ],
+    "Instructional Design": [
+      "Instructional Design"
+    ],
+    "Special Education": [
+      "Special Education"
+    ],
+    "Tutoring": [
+      "Tutoring"
+    ],
+    "E-Learning": [
+      "E-Learning",
+      "Online Teaching",
+      "Learning Management System",
+      "LMS"
+    ]
+  },
+  "legal": {
+    "Legal Research": [
+      "Legal Research"
+    ],
+    "Contract Drafting": [
+      "Contract Drafting",
+      "Contract Review"
+    ],
+    "Litigation Support": [
+      "Litigation Support",
+      "Litigation"
+    ],
+    "Compliance": [
+      "Regulatory Compliance",
+      "Compliance"
+    ],
+    "Legal Writing": [
+      "Legal Writing"
+    ],
+    "Paralegal Skills": [
+      "Paralegal"
+    ],
+    "Intellectual Property": [
+      "Intellectual Property",
+      "IP Law"
+    ],
+    "Corporate Law": [
+      "Corporate Law"
+    ]
+  },
+  "engineering_manufacturing": {
+    "AutoCAD": [
+      "AutoCAD"
+    ],
+    "SolidWorks": [
+      "SolidWorks"
+    ],
+    "Mechanical Design": [
+      "Mechanical Design"
+    ],
+    "Electrical Circuit Design": [
+      "Circuit Design",
+      "Electrical Circuit Design"
+    ],
+    "PLC Programming": [
+      "PLC Programming",
+      "Programmable Logic Controller"
+    ],
+    "Quality Control": [
+      "Quality Control",
+      "QC"
+    ],
+    "Six Sigma": [
+      "Six Sigma",
+      "Lean Six Sigma"
+    ],
+    "CNC Machining": [
+      "CNC Machining",
+      "CNC Operation"
+    ],
+    "Civil Engineering Design": [
+      "Civil Engineering",
+      "Structural Design"
+    ],
+    "HVAC Systems": [
+      "HVAC",
+      "HVAC Systems"
+    ],
+    "Manufacturing Process Improvement": [
+      "Process Improvement",
+      "Manufacturing Process Improvement"
+    ]
+  },
+  "hospitality_retail": {
+    "Point of Sale Systems": [
+      "POS",
+      "Point of Sale",
+      "Point of Sale Systems"
+    ],
+    "Retail Operations": [
+      "Retail Operations",
+      "Retail Management"
+    ],
+    "Visual Merchandising": [
+      "Visual Merchandising"
+    ],
+    "Food Safety Certification": [
+      "Food Safety",
+      "ServSafe",
+      "Food Safety Certification"
+    ],
+    "Guest Services": [
+      "Guest Services",
+      "Hospitality Management"
+    ],
+    "Event Planning": [
+      "Event Planning",
+      "Event Coordination"
+    ],
+    "Cash Handling": [
+      "Cash Handling"
+    ]
+  },
+  "media_writing_journalism": {
+    "Content Writing": [
+      "Content Writing",
+      "Copywriting"
+    ],
+    "Technical Writing": [
+      "Technical Writing"
+    ],
+    "Editing and Proofreading": [
+      "Editing",
+      "Proofreading"
+    ],
+    "Journalism": [
+      "Journalism",
+      "News Writing"
+    ],
+    "Public Relations": [
+      "Public Relations",
+      "PR"
+    ],
+    "Scriptwriting": [
+      "Scriptwriting",
+      "Screenwriting"
+    ]
   },
   "soft_skills": {
-    "Communication": ["Communication", "Communication Skills"],
-    "Leadership": ["Leadership"],
-    "Problem Solving": ["Problem Solving", "Problem-Solving"],
-    "Teamwork": ["Teamwork", "Team Collaboration"],
-    "Time Management": ["Time Management"],
-    "Critical Thinking": ["Critical Thinking"],
-    "Adaptability": ["Adaptability"],
-    "Attention to Detail": ["Attention to Detail"],
-    "Analytical Thinking": ["Analytical Thinking", "Analytical Skills"]
+    "Communication": [
+      "Communication",
+      "Communication Skills"
+    ],
+    "Leadership": [
+      "Leadership"
+    ],
+    "Problem Solving": [
+      "Problem Solving",
+      "Problem-Solving"
+    ],
+    "Teamwork": [
+      "Teamwork",
+      "Team Collaboration"
+    ],
+    "Time Management": [
+      "Time Management"
+    ],
+    "Critical Thinking": [
+      "Critical Thinking"
+    ],
+    "Adaptability": [
+      "Adaptability"
+    ],
+    "Attention to Detail": [
+      "Attention to Detail"
+    ],
+    "Analytical Thinking": [
+      "Analytical Thinking",
+      "Analytical Skills"
+    ],
+    "Strategic Planning": [
+      "Strategic Planning"
+    ],
+    "Mentorship": [
+      "Mentorship",
+      "Coaching"
+    ],
+    "Decision Making": [
+      "Decision Making",
+      "Decision-Making"
+    ],
+    "Interpersonal Skills": [
+      "Interpersonal Skills"
+    ],
+    "Creativity": [
+      "Creativity",
+      "Creative Thinking"
+    ],
+    "Work Ethic": [
+      "Strong Work Ethic",
+      "Work Ethic"
+    ]
   },
-
-  "business_finance": {
-    "Financial Analysis": ["Financial Analysis", "Financial Modeling"],
-    "Accounting": ["Accounting", "Bookkeeping"],
-    "Excel": ["Excel", "Microsoft Excel", "Advanced Excel"],
-    "Budgeting": ["Budgeting", "Budget Planning"],
-    "Business Analysis": ["Business Analysis", "Business Analytics"],
-    "Financial Reporting": ["Financial Reporting"],
-    "Risk Management": ["Risk Management"],
-    "Forecasting": ["Forecasting", "Sales Forecasting"]
+  "skilled_trades_construction": {
+    "Electrical Wiring": [
+      "Electrical Wiring",
+      "Electrician",
+      "Electrical Installation"
+    ],
+    "Plumbing": [
+      "Plumbing"
+    ],
+    "Carpentry": [
+      "Carpentry"
+    ],
+    "Welding": [
+      "Welding"
+    ],
+    "HVAC Installation": [
+      "HVAC Installation",
+      "HVAC Repair"
+    ],
+    "Masonry": [
+      "Masonry",
+      "Bricklaying"
+    ],
+    "Construction Management": [
+      "Construction Management"
+    ],
+    "Blueprint Reading": [
+      "Blueprint Reading",
+      "Reading Blueprints"
+    ],
+    "Heavy Equipment Operation": [
+      "Heavy Equipment Operation",
+      "Heavy Machinery Operation"
+    ],
+    "OSHA Certification": [
+      "OSHA Certification",
+      "OSHA Certified",
+      "OSHA Safety Training"
+    ],
+    "Roofing": [
+      "Roofing"
+    ],
+    "Drywall Installation": [
+      "Drywall Installation",
+      "Drywall"
+    ],
+    "House Painting": [
+      "House Painting",
+      "Painting and Decorating"
+    ],
+    "Scaffolding": [
+      "Scaffolding"
+    ],
+    "Concrete Work": [
+      "Concrete Work",
+      "Concrete Finishing"
+    ]
   },
-  "marketing_sales": {
-    "SEO": ["SEO", "Search Engine Optimization"],
-    "Content Marketing": ["Content Marketing", "Content Strategy"],
-    "Social Media Marketing": ["Social Media Marketing", "Social Media Management"],
-    "Digital Marketing": ["Digital Marketing"],
-    "Email Marketing": ["Email Marketing"],
-    "Google Analytics": ["Google Analytics"],
-    "CRM Software": ["CRM", "Salesforce", "HubSpot"],
-    "Sales Strategy": ["Sales Strategy", "Sales Development"],
-    "Market Research": ["Market Research"],
-    "Brand Management": ["Brand Management", "Branding"]
+  "architecture_real_estate": {
+    "Architectural Design": [
+      "Architectural Design"
+    ],
+    "Revit": [
+      "Revit",
+      "Autodesk Revit"
+    ],
+    "Building Codes Compliance": [
+      "Building Codes",
+      "Building Code Compliance"
+    ],
+    "Real Estate Sales": [
+      "Real Estate Sales",
+      "Real Estate Agent"
+    ],
+    "Property Management": [
+      "Property Management"
+    ],
+    "Real Estate Appraisal": [
+      "Real Estate Appraisal",
+      "Property Appraisal"
+    ],
+    "Urban Planning": [
+      "Urban Planning",
+      "City Planning"
+    ],
+    "Land Surveying": [
+      "Land Surveying",
+      "Surveying"
+    ],
+    "Zoning Regulations": [
+      "Zoning Regulations",
+      "Zoning Compliance"
+    ],
+    "Interior Design": [
+      "Interior Design"
+    ]
   },
-  "design": {
-    "UI/UX Design": ["UI/UX", "UX Design", "UI Design", "User Experience Design"],
-    "Adobe Photoshop": ["Photoshop", "Adobe Photoshop"],
-    "Adobe Illustrator": ["Illustrator", "Adobe Illustrator"],
-    "Figma": ["Figma"],
-    "Graphic Design": ["Graphic Design"],
-    "Wireframing": ["Wireframing", "Prototyping"],
-    "Adobe XD": ["Adobe XD"],
-    "Canva": ["Canva"]
+  "banking_insurance": {
+    "Loan Underwriting": [
+      "Loan Underwriting",
+      "Underwriting"
+    ],
+    "Credit Analysis": [
+      "Credit Analysis"
+    ],
+    "Insurance Claims Processing": [
+      "Claims Processing",
+      "Insurance Claims"
+    ],
+    "Actuarial Analysis": [
+      "Actuarial Analysis",
+      "Actuarial Science"
+    ],
+    "Risk Assessment": [
+      "Risk Assessment"
+    ],
+    "Mortgage Lending": [
+      "Mortgage Lending",
+      "Mortgage Origination"
+    ],
+    "Anti-Money Laundering": [
+      "AML",
+      "Anti-Money Laundering"
+    ],
+    "Know Your Customer": [
+      "KYC",
+      "Know Your Customer"
+    ],
+    "Wealth Management": [
+      "Wealth Management"
+    ],
+    "Portfolio Management": [
+      "Portfolio Management"
+    ],
+    "Bank Teller Operations": [
+      "Bank Teller",
+      "Teller Operations"
+    ]
+  },
+  "science_research_lab": {
+    "Laboratory Techniques": [
+      "Laboratory Techniques",
+      "Lab Techniques"
+    ],
+    "PCR": [
+      "PCR",
+      "Polymerase Chain Reaction"
+    ],
+    "Microscopy": [
+      "Microscopy"
+    ],
+    "Chromatography": [
+      "Chromatography",
+      "HPLC",
+      "Gas Chromatography"
+    ],
+    "Spectroscopy": [
+      "Spectroscopy"
+    ],
+    "Research Methodology": [
+      "Research Methodology",
+      "Research Design"
+    ],
+    "Grant Writing": [
+      "Grant Writing"
+    ],
+    "Peer Review": [
+      "Peer Review"
+    ],
+    "Scientific Writing": [
+      "Scientific Writing"
+    ],
+    "Biostatistics": [
+      "Biostatistics"
+    ],
+    "Clinical Trials": [
+      "Clinical Trials",
+      "Clinical Research"
+    ]
+  },
+  "pharma_biotech": {
+    "Drug Development": [
+      "Drug Development"
+    ],
+    "Good Manufacturing Practice": [
+      "GMP",
+      "Good Manufacturing Practice"
+    ],
+    "Good Laboratory Practice": [
+      "GLP",
+      "Good Laboratory Practice"
+    ],
+    "Regulatory Affairs": [
+      "Regulatory Affairs"
+    ],
+    "Pharmacovigilance": [
+      "Pharmacovigilance"
+    ],
+    "Bioinformatics": [
+      "Bioinformatics"
+    ],
+    "Genomics": [
+      "Genomics"
+    ]
+  },
+  "agriculture_farming": {
+    "Crop Management": [
+      "Crop Management"
+    ],
+    "Livestock Management": [
+      "Livestock Management"
+    ],
+    "Irrigation Systems": [
+      "Irrigation Systems",
+      "Irrigation Management"
+    ],
+    "Precision Agriculture": [
+      "Precision Agriculture"
+    ],
+    "Farm Equipment Operation": [
+      "Farm Equipment Operation",
+      "Tractor Operation"
+    ],
+    "Soil Testing": [
+      "Soil Testing",
+      "Soil Analysis"
+    ],
+    "Pesticide Application": [
+      "Pesticide Application",
+      "Pest Control"
+    ],
+    "Agronomy": [
+      "Agronomy"
+    ]
+  },
+  "environmental_sustainability": {
+    "Environmental Compliance": [
+      "Environmental Compliance"
+    ],
+    "Sustainability Reporting": [
+      "Sustainability Reporting",
+      "ESG Reporting",
+      "ESG"
+    ],
+    "Waste Management": [
+      "Waste Management"
+    ],
+    "Environmental Impact Assessment": [
+      "Environmental Impact Assessment",
+      "EIA"
+    ],
+    "Renewable Energy Systems": [
+      "Renewable Energy",
+      "Solar Energy Systems",
+      "Wind Energy"
+    ],
+    "Carbon Footprint Analysis": [
+      "Carbon Footprint Analysis",
+      "Carbon Accounting"
+    ]
+  },
+  "aviation_aerospace": {
+    "Pilot License": [
+      "Pilot License",
+      "Commercial Pilot License",
+      "CPL"
+    ],
+    "Aircraft Maintenance": [
+      "Aircraft Maintenance",
+      "Airframe and Powerplant",
+      "A&P Certification"
+    ],
+    "Air Traffic Control": [
+      "Air Traffic Control",
+      "ATC"
+    ],
+    "Flight Operations": [
+      "Flight Operations"
+    ],
+    "Aviation Safety Management": [
+      "Aviation Safety",
+      "Safety Management System",
+      "SMS"
+    ],
+    "Avionics": [
+      "Avionics"
+    ]
+  },
+  "maritime_shipping": {
+    "Vessel Operations": [
+      "Vessel Operations",
+      "Ship Operations"
+    ],
+    "Maritime Navigation": [
+      "Maritime Navigation",
+      "Marine Navigation"
+    ],
+    "Marine Engineering": [
+      "Marine Engineering"
+    ],
+    "Port Operations": [
+      "Port Operations"
+    ],
+    "Freight Forwarding": [
+      "Freight Forwarding"
+    ],
+    "Customs Compliance": [
+      "Customs Compliance",
+      "Customs Clearance"
+    ]
+  },
+  "automotive": {
+    "Automotive Repair": [
+      "Automotive Repair",
+      "Auto Repair"
+    ],
+    "Engine Diagnostics": [
+      "Engine Diagnostics",
+      "Vehicle Diagnostics"
+    ],
+    "ASE Certification": [
+      "ASE Certification",
+      "ASE Certified"
+    ],
+    "Vehicle Inspection": [
+      "Vehicle Inspection"
+    ],
+    "Auto Body Repair": [
+      "Auto Body Repair",
+      "Collision Repair"
+    ]
+  },
+  "energy_oil_gas_mining": {
+    "Oil and Gas Extraction": [
+      "Oil and Gas Extraction",
+      "Drilling Operations"
+    ],
+    "Petroleum Engineering": [
+      "Petroleum Engineering"
+    ],
+    "Mining Operations": [
+      "Mining Operations"
+    ],
+    "Rig Operations": [
+      "Rig Operations",
+      "Drilling Rig Operations"
+    ],
+    "Well Testing": [
+      "Well Testing"
+    ],
+    "Power Plant Operations": [
+      "Power Plant Operations"
+    ]
+  },
+  "telecommunications": {
+    "Network Infrastructure": [
+      "Network Infrastructure"
+    ],
+    "Telecommunications Systems": [
+      "Telecommunications",
+      "Telecom Systems"
+    ],
+    "VoIP": [
+      "VoIP",
+      "Voice over IP"
+    ],
+    "Fiber Optic Installation": [
+      "Fiber Optic Installation",
+      "Fiber Optics"
+    ],
+    "RF Engineering": [
+      "Wireless Communication Systems",
+      "RF Engineering"
+    ]
+  },
+  "arts_performing_music": {
+    "Music Production": [
+      "Music Production"
+    ],
+    "Music Composition": [
+      "Music Composition",
+      "Composing"
+    ],
+    "Sound Engineering": [
+      "Sound Engineering",
+      "Audio Engineering"
+    ],
+    "Theatrical Acting": [
+      "Acting",
+      "Stage Acting",
+      "Film Acting"
+    ],
+    "Choreography": [
+      "Choreography"
+    ],
+    "Theatre Production": [
+      "Theatre Production",
+      "Stage Production"
+    ],
+    "Piano Performance": [
+      "Piano Performance",
+      "Piano"
+    ],
+    "Guitar Performance": [
+      "Guitar Performance",
+      "Guitar"
+    ]
+  },
+  "photography_videography": {
+    "Photography": [
+      "Photography"
+    ],
+    "Videography": [
+      "Videography"
+    ],
+    "Photo Editing": [
+      "Photo Editing",
+      "Lightroom",
+      "Adobe Lightroom"
+    ],
+    "Cinematography": [
+      "Cinematography"
+    ]
+  },
+  "fitness_sports": {
+    "Personal Training": [
+      "Personal Training",
+      "Personal Trainer"
+    ],
+    "Group Fitness Instruction": [
+      "Group Fitness Instruction",
+      "Fitness Instructor"
+    ],
+    "Sports Coaching": [
+      "Sports Coaching",
+      "Athletic Coaching"
+    ],
+    "Sports Nutrition Counseling": [
+      "Nutrition Counseling",
+      "Sports Nutrition"
+    ],
+    "Strength and Conditioning": [
+      "Strength and Conditioning"
+    ]
+  },
+  "beauty_cosmetology": {
+    "Hairstyling": [
+      "Hairstyling",
+      "Hair Styling"
+    ],
+    "Makeup Application": [
+      "Makeup Application",
+      "Makeup Artistry"
+    ],
+    "Esthetics": [
+      "Esthetics",
+      "Skincare"
+    ],
+    "Nail Technology": [
+      "Nail Technology",
+      "Manicure",
+      "Pedicure"
+    ],
+    "Cosmetology License": [
+      "Cosmetology License",
+      "Licensed Cosmetologist"
+    ]
+  },
+  "culinary_food_service": {
+    "Culinary Arts": [
+      "Culinary Arts",
+      "Cooking"
+    ],
+    "Menu Planning": [
+      "Menu Planning"
+    ],
+    "Baking and Pastry": [
+      "Baking",
+      "Pastry Arts"
+    ],
+    "Kitchen Management": [
+      "Kitchen Management"
+    ],
+    "Catering": [
+      "Catering"
+    ]
+  },
+  "veterinary_animal_care": {
+    "Veterinary Medicine": [
+      "Veterinary Medicine"
+    ],
+    "Animal Handling": [
+      "Animal Handling"
+    ],
+    "Veterinary Technician Skills": [
+      "Veterinary Technician",
+      "Vet Tech"
+    ],
+    "Animal Husbandry": [
+      "Animal Husbandry"
+    ]
+  },
+  "social_work_nonprofit": {
+    "Case Management": [
+      "Case Management"
+    ],
+    "Community Outreach": [
+      "Community Outreach"
+    ],
+    "Crisis Intervention": [
+      "Crisis Intervention"
+    ],
+    "Nonprofit Program Management": [
+      "Nonprofit Management",
+      "Program Management"
+    ],
+    "Fundraising": [
+      "Fundraising"
+    ],
+    "Volunteer Coordination": [
+      "Volunteer Coordination",
+      "Volunteer Management"
+    ]
+  },
+  "government_public_administration": {
+    "Public Policy Analysis": [
+      "Public Policy",
+      "Policy Analysis"
+    ],
+    "Grant Administration": [
+      "Grant Administration"
+    ],
+    "Public Administration": [
+      "Public Administration"
+    ],
+    "Legislative Research": [
+      "Legislative Research"
+    ]
+  },
+  "military_security_law_enforcement": {
+    "Law Enforcement Operations": [
+      "Law Enforcement",
+      "Police Operations"
+    ],
+    "Security Operations": [
+      "Security Operations",
+      "Physical Security"
+    ],
+    "Surveillance": [
+      "Surveillance"
+    ],
+    "Military Operations": [
+      "Military Operations",
+      "Tactical Operations"
+    ],
+    "Firearms Proficiency": [
+      "Firearms Training",
+      "Firearms Proficiency"
+    ],
+    "Emergency Response": [
+      "Emergency Response",
+      "First Responder"
+    ],
+    "Criminal Investigation": [
+      "Criminal Investigation"
+    ]
+  },
+  "translation_languages": {
+    "Translation": [
+      "Translation"
+    ],
+    "Interpretation": [
+      "Interpretation",
+      "Interpreting"
+    ],
+    "Multilingual Communication": [
+      "Bilingual",
+      "Multilingual"
+    ],
+    "Localization": [
+      "Localization"
+    ]
+  },
+  "library_archival_science": {
+    "Cataloging": [
+      "Cataloging",
+      "Cataloguing"
+    ],
+    "Archival Research": [
+      "Archival Research",
+      "Archiving"
+    ],
+    "Records Management": [
+      "Records Management"
+    ],
+    "Library Science": [
+      "Library Science"
+    ]
+  },
+  "management_leadership_executive": {
+    "Executive Leadership": [
+      "Executive Leadership",
+      "C-Suite Leadership"
+    ],
+    "Change Management": [
+      "Change Management"
+    ],
+    "Organizational Development": [
+      "Organizational Development"
+    ],
+    "Business Strategy": [
+      "Business Strategy",
+      "Corporate Strategy"
+    ],
+    "Operations Management": [
+      "Operations Management"
+    ],
+    "Cross-Functional Team Leadership": [
+      "Cross-Functional Leadership",
+      "Cross-Functional Team Management"
+    ]
+  },
+  "consulting": {
+    "Management Consulting": [
+      "Management Consulting"
+    ],
+    "Business Process Improvement": [
+      "Business Process Improvement",
+      "Process Optimization"
+    ],
+    "Client Advisory Services": [
+      "Client Advisory",
+      "Advisory Services"
+    ],
+    "Feasibility Studies": [
+      "Feasibility Studies",
+      "Feasibility Analysis"
+    ]
+  },
+  "entrepreneurship_startup": {
+    "Startup Fundraising": [
+      "Startup Fundraising",
+      "Venture Capital",
+      "Seed Funding"
+    ],
+    "Business Plan Development": [
+      "Business Plan Development",
+      "Business Planning"
+    ],
+    "Pitch Deck Creation": [
+      "Pitch Deck",
+      "Pitch Deck Creation"
+    ],
+    "Product-Market Fit": [
+      "Product-Market Fit"
+    ],
+    "Bootstrapping": [
+      "Bootstrapping"
+    ]
   }
 }
