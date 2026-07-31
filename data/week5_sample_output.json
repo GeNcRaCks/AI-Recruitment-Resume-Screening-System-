@@ -1,0 +1,28 @@
+{
+  "skill_match_ratio": 0.533,
+  "tfidf_similarity": 0.252,
+  "semantic_similarity": 0.615,
+  "final_score": 0.481,
+  "matched_skills": [
+    "Figma",
+    "Full-Stack Development",
+    "Java",
+    "JavaScript",
+    "Jira",
+    "Machine Learning",
+    "Python",
+    "React"
+  ],
+  "missing_skills": [
+    "Cybersecurity",
+    "Data Structures and Algorithms",
+    "Encryption",
+    "Git",
+    "Mentorship",
+    "Object-Oriented Programming",
+    "Secure Coding Practices"
+  ],
+  "questions": "1. Can you describe a recent full\u2011stack project where you used React for the frontend and Python or Java for the backend, detailing how you designed the API contracts, managed state across the stack, and resolved any integration challenges?  \n\n2. Walk me through your process for converting a high\u2011fidelity Figma prototype into a production\u2011ready React component, including how you collaborate with designers and track tasks or feedback in Jira.  \n\n3. Tell me about a machine\u2011learning feature you implemented (e.g., content verification or image generation): which libraries or APIs did you use, how did you handle data preprocessing and model serving, and how did you embed the model within a web application?  \n\n4. How do you apply object\u2011oriented programming principles in your Java or Python code to improve modularity, testability, and scalability, especially in larger codebases?  \n\n5. If you were asked to add encryption to a data\u2011transfer endpoint you\u2019ve never secured before, what steps would you take to research the appropriate algorithms, implement the solution, and verify its security?  \n\n6. You haven\u2019t listed Git experience\u2014how would you quickly get up to speed with Git workflows (branching, pull requests, conflict resolution) within the first two weeks, and what learning resources would you use?",
+  "summary": "The candidate\u2019s overall fit for the Software Engineering Intern role is modest, scoring 0.48\u202fout of\u202f1.0. Their strengths include hands\u2011on experience with full\u2011stack development, proficiency in Java, JavaScript, Python, and React, and exposure to machine\u2011learning concepts and design tools such as Figma and Jira. However, they lack demonstrated competence in core data\u2011structures and algorithms, object\u2011oriented design, secure coding practices, encryption, and cybersecurity\u2014areas explicitly emphasized in the job description. **Recommendation: Reject \u2013 the candidate\u2019s current skill gaps would require significant ramp\u2011up time beyond the short internship window.**",
+  "feedback": "- **Highlight:**\u202fEmphasize your **Full\u2011Stack Development** experience (e.g., Java, Python, React, and JavaScript) with concrete project outcomes or metrics so recruiters instantly see the end\u2011to\u2011end value you bring.\n\n- **Skill gap to address:**\u202fStrengthen your **Data Structures & Algorithms** (and related problem\u2011"
+}
