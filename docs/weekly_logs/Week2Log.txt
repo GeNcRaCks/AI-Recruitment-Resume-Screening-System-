@@ -1,0 +1,4 @@
+In this week I explored resume parsing and text extraction from PDF and DOCX files, and practiced how to handle real-world formatting issues like tables, text boxes, and multi-column layouts.
+I also explored text cleaning and section-splitting, learning how to normalize messy text and detect resume sections like Education, Skills, and Experience using regex.
+I also explored skill extraction using spaCy's PhraseMatcher, learning how to detect skills and their synonyms in text, and used this to build a candidate ranking system based on how well resumes matched a job description.
+Some practiced code examples are in src/parsing and src/nlp.

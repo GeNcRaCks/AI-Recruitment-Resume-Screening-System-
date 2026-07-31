@@ -1,0 +1,4 @@
+In this week I explored resume-to-job similarity scoring, learning the difference between TF-IDF (keyword-based) similarity and semantic (meaning-based) similarity using sentence embeddings.
+I also explored how to combine multiple scoring signals into one weighted final score, and practiced comparing rankings before and after adding similarity scoring to see how candidate rankings changed.
+I also explored using an LLM (Groq API) to generate interview questions, candidate summaries, and feedback from a candidate's matched and missing skills, and practiced testing this kind of AI-generated code using mocked responses instead of real API calls.
+Some practiced code examples are in src/scoring and src/generation.
