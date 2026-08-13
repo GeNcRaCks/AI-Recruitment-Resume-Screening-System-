@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -14,15 +14,19 @@ import {
   Star,
   Brain,
   Search,
-  Filter
+  Filter,
+  Menu,
+  X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div style={{ background: 'var(--color-bg)', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--color-bg)', minHeight: '100vh', overflowX: 'hidden' }}>
       {/* Navbar */}
-      <nav className="landing-nav">
+      <nav className={`landing-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="nav-logo">
           <div className="nav-logo-icon">
             <Sparkles size={20} />
@@ -30,14 +34,22 @@ export default function LandingPage() {
           <span>RecruitPro AI</span>
         </div>
 
-        <ul className="nav-links">
-          <li><a href="#features">Features</a></li>
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#testimonials">Reviews</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle navigation menu"
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        <ul className={`nav-links ${mobileMenuOpen ? 'mobile-visible' : ''}`}>
+          <li><a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a></li>
+          <li><a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</a></li>
+          <li><a href="#testimonials" onClick={() => setMobileMenuOpen(false)}>Reviews</a></li>
+          <li><a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a></li>
         </ul>
 
-        <div className="nav-actions">
+        <div className={`nav-actions ${mobileMenuOpen ? 'mobile-visible' : ''}`}>
           <Link href="/login" className="btn btn-secondary">Log In</Link>
           <Link href="/dashboard" className="btn btn-primary">Go to Dashboard</Link>
         </div>

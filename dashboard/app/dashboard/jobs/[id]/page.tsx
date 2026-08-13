@@ -46,8 +46,17 @@ export default function JobDetailPage() {
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number }[]>([]);
+  const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
 
   if (!job) return <div>Job not found</div>;
+
+  // Allowed file extensions for resume uploads
+  const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc'];
+
+  const isFileTypeAllowed = (fileName: string): boolean => {
+    const ext = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
+    return ALLOWED_EXTENSIONS.includes(ext);
+  };
 
   // Filter candidates
   const filteredCandidates = candidates.filter((c) => {
@@ -63,14 +72,39 @@ export default function JobDetailPage() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    setRejectedFiles([]);
+
     const files = Array.from(e.dataTransfer.files);
-    simulateFileUpload(files);
+    const validFiles = files.filter(f => isFileTypeAllowed(f.name));
+    const invalidFiles = files.filter(f => !isFileTypeAllowed(f.name));
+
+    if (invalidFiles.length > 0) {
+      setRejectedFiles(invalidFiles.map(f => f.name));
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => setRejectedFiles([]), 5000);
+    }
+
+    if (validFiles.length > 0) {
+      simulateFileUpload(validFiles);
+    }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      simulateFileUpload(files);
+      setRejectedFiles([]);
+      // The file input already has accept=".pdf,.docx,.doc", but validate again as defense-in-depth
+      const validFiles = files.filter(f => isFileTypeAllowed(f.name));
+      const invalidFiles = files.filter(f => !isFileTypeAllowed(f.name));
+
+      if (invalidFiles.length > 0) {
+        setRejectedFiles(invalidFiles.map(f => f.name));
+        setTimeout(() => setRejectedFiles([]), 5000);
+      }
+
+      if (validFiles.length > 0) {
+        simulateFileUpload(validFiles);
+      }
     }
   };
 
@@ -183,7 +217,7 @@ export default function JobDetailPage() {
 
       {/* Bulk Upload Zone (Scene 2) */}
       <div
-        className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
+        className={`upload-zone ${isDragging ? 'drag-over' : ''} ${rejectedFiles.length > 0 ? 'has-error' : ''}`}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
@@ -205,6 +239,13 @@ export default function JobDetailPage() {
           Drag and drop multiple resumes here or <span className="browse-link">browse files</span> from your computer
         </p>
         <div className="file-types">Supports PDF and DOCX files (Up to 50 resumes at once)</div>
+        
+        {/* Rejected Files Message */}
+        {rejectedFiles.length > 0 && (
+          <div className="upload-error-message" style={{ marginTop: '16px', color: 'var(--color-error)', fontSize: '0.85rem', fontWeight: 500 }}>
+            Unsupported file type(s): {rejectedFiles.join(', ')}. Please upload PDF or DOCX files only.
+          </div>
+        )}
       </div>
 
       {/* Uploading progress bars (Scene 3) */}

@@ -5,16 +5,25 @@
 'use client';
 
 import React from 'react';
-import { Search, Bell, HelpCircle } from 'lucide-react';
+import { Search, Bell, HelpCircle, Menu } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
 
-export const TopBar: React.FC = () => {
+interface TopBarProps {
+  onToggleSidebar?: () => void;
+}
+
+export const TopBar: React.FC<TopBarProps> = ({ onToggleSidebar }) => {
   const { user } = useData();
 
   return (
     <header className="topbar">
       <div className="topbar-left">
+        {onToggleSidebar && (
+          <button className="topbar-menu-toggle" onClick={onToggleSidebar} title="Toggle Menu">
+            <Menu size={20} />
+          </button>
+        )}
         <div className="topbar-search">
           <Search size={16} className="search-icon" />
           <input type="text" placeholder="Search candidates, skills, jobs..." />

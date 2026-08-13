@@ -15,11 +15,17 @@ import {
   BarChart3, 
   Settings, 
   Sparkles, 
-  LogOut 
+  LogOut,
+  X
 } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const pathname = usePathname();
   const { user } = useData();
 
@@ -33,12 +39,23 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo-icon">
           <Sparkles size={20} />
         </div>
         <span className="sidebar-brand">RecruitPro AI</span>
+        
+        {/* Mobile close button */}
+        {setIsOpen && (
+          <button 
+            className="sidebar-close-btn" 
+            onClick={() => setIsOpen(false)}
+            title="Close menu"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       <nav className="sidebar-nav">

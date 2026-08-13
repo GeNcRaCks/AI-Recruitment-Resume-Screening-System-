@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Mail, Lock, User, Building, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Building, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,9 +13,30 @@ export default function RegisterPage() {
     company: '',
     password: '',
   });
+  const [passwordError, setPasswordError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  // Password requirement checks
+  const passwordChecks = useMemo(() => ({
+    minLength: formData.password.length >= 8,
+    hasUppercase: /[A-Z]/.test(formData.password),
+    hasLowercase: /[a-z]/.test(formData.password),
+    hasDigit: /[0-9]/.test(formData.password),
+    hasSpecial: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(formData.password),
+  }), [formData.password]);
+
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
+
+    if (!isPasswordValid) {
+      setPasswordError('Please meet all password requirements below.');
+      return;
+    }
+
+    setPasswordError('');
     router.push('/dashboard');
   };
 
@@ -33,7 +54,7 @@ export default function RegisterPage() {
           <h1>Create an account</h1>
           <p className="auth-subtitle">Start screening resumes with AI in minutes.</p>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <div className="form-input-icon">
@@ -85,26 +106,64 @@ export default function RegisterPage() {
                 <Lock size={18} className="input-icon" />
                 <input
                   type="password"
-                  className="form-input"
+                  className={`form-input ${submitted && !isPasswordValid ? 'form-input-error' : ''}`}
                   placeholder="At least 8 characters"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
+                    if (passwordError) setPasswordError('');
+                  }}
+                  minLength={8}
                   required
                 />
               </div>
+              {/* Password strength bar */}
               <div className="password-strength">
                 <div className={`bar active ${formData.password.length > 0 ? 'weak' : ''}`} />
-                <div className={`bar active ${formData.password.length >= 6 ? 'medium' : ''}`} />
-                <div className={`bar active ${formData.password.length >= 10 ? 'strong' : ''}`} />
+                <div className={`bar active ${formData.password.length >= 6 && passwordChecks.hasDigit ? 'medium' : ''}`} />
+                <div className={`bar active ${isPasswordValid ? 'strong' : ''}`} />
               </div>
+              {/* Password requirements checklist */}
+              {formData.password.length > 0 && (
+                <ul className="password-requirements">
+                  <li className={passwordChecks.minLength ? 'met' : submitted ? 'unmet' : ''}>
+                    {passwordChecks.minLength ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                    At least 8 characters
+                  </li>
+                  <li className={passwordChecks.hasUppercase ? 'met' : submitted ? 'unmet' : ''}>
+                    {passwordChecks.hasUppercase ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                    One uppercase letter (A–Z)
+                  </li>
+                  <li className={passwordChecks.hasLowercase ? 'met' : submitted ? 'unmet' : ''}>
+                    {passwordChecks.hasLowercase ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                    One lowercase letter (a–z)
+                  </li>
+                  <li className={passwordChecks.hasDigit ? 'met' : submitted ? 'unmet' : ''}>
+                    {passwordChecks.hasDigit ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                    One digit (0–9)
+                  </li>
+                  <li className={passwordChecks.hasSpecial ? 'met' : submitted ? 'unmet' : ''}>
+                    {passwordChecks.hasSpecial ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                    One special character (!@#$%...)
+                  </li>
+                </ul>
+              )}
+              {/* Error message */}
+              {passwordError && (
+                <div className="form-error-message">{passwordError}</div>
+              )}
             </div>
 
             <div className="form-checkbox">
               <input type="checkbox" id="terms" required defaultChecked />
-              <label htmlFor="terms">I agree to the Terms of Service & Privacy Policy</label>
+              <label htmlFor="terms">I agree to the Terms of Service &amp; Privacy Policy</label>
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg">
+            <button
+              type="submit"
+              className="btn btn-primary btn-full btn-lg"
+              disabled={formData.password.length > 0 && !isPasswordValid}
+            >
               Get Started Free <ArrowRight size={18} />
             </button>
           </form>
@@ -127,3 +186,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

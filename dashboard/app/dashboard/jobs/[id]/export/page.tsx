@@ -19,6 +19,7 @@ export default function ExportPage() {
   const [email, setEmail] = useState('hiring.manager@company.com');
   const [message, setMessage] = useState('Hi, attached is the candidate shortlist for Senior Backend Engineer. Top candidates are highlighted with AI scores and summaries.');
   const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState('');
 
   if (!job) return <div>Job not found</div>;
 
@@ -46,6 +47,15 @@ export default function ExportPage() {
 
   const handleSendEmail = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email domain and TLD (e.g., user@domain.com)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address with a valid domain (e.g., user@company.com).');
+      return;
+    }
+    
+    setEmailError('');
     setEmailSent(true);
     setTimeout(() => setEmailSent(false), 3000);
   };
@@ -100,11 +110,21 @@ export default function ExportPage() {
               <label className="form-label">Recipient Email</label>
               <input
                 type="email"
-                className="form-input"
+                className={`form-input ${emailError ? 'form-input-error' : ''}`}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailError) setEmailError('');
+                }}
+                pattern="[^\s@]+@[^\s@]+\.[^\s@]{2,}"
+                title="Please provide a valid email address with a domain (e.g., user@company.com)"
                 required
               />
+              {emailError && (
+                <div className="form-error-message" style={{ color: 'var(--color-error)', fontSize: '0.85rem', marginTop: '6px' }}>
+                  {emailError}
+                </div>
+              )}
             </div>
 
             <div className="form-group">
