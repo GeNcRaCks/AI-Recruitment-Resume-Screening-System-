@@ -13,8 +13,8 @@ export default function ComparePage() {
   const jobId = params.id as string;
   const { getJob, getCandidatesForJob, updateCandidateStatus } = useData();
 
-  const job = getJob(jobId) || getJob('job-1');
-  const candidates = getCandidatesForJob(job ? job.id : 'job-1');
+  const job = getJob(jobId);
+  const candidates = getCandidatesForJob(jobId);
 
   // Compare candidates in Interview or top 3 candidates
   const compareCandidates = candidates

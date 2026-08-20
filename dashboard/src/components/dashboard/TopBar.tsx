@@ -4,9 +4,10 @@
 
 'use client';
 
-import React from 'react';
-import { Search, Bell, HelpCircle, Menu } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Menu } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface TopBarProps {
@@ -15,6 +16,15 @@ interface TopBarProps {
 
 export const TopBar: React.FC<TopBarProps> = ({ onToggleSidebar }) => {
   const { user } = useData();
+  const router = useRouter();
+  const [search, setSearch] = useState('');
+  const displayName = user?.name || 'Recruiter';
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = search.trim();
+    router.push(query ? `/dashboard/candidates?search=${encodeURIComponent(query)}` : '/dashboard/candidates');
+  };
 
   return (
     <header className="topbar">
@@ -24,24 +34,21 @@ export const TopBar: React.FC<TopBarProps> = ({ onToggleSidebar }) => {
             <Menu size={20} />
           </button>
         )}
-        <div className="topbar-search">
+        <form className="topbar-search" onSubmit={handleSearch}>
           <Search size={16} className="search-icon" />
-          <input type="text" placeholder="Search candidates, skills, jobs..." />
-        </div>
+          <input
+            type="search"
+            placeholder="Search candidates, skills, jobs..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            aria-label="Search candidates, skills, and jobs"
+          />
+        </form>
       </div>
 
       <div className="topbar-right">
-        <button className="topbar-icon-btn" title="Help & Documentation">
-          <HelpCircle size={18} />
-        </button>
-
-        <button className="topbar-icon-btn" title="Notifications">
-          <Bell size={18} />
-          <span className="notification-dot" />
-        </button>
-
         <Link href="/dashboard/settings" className="topbar-avatar">
-          {user.name.charAt(0)}
+          {displayName.charAt(0).toUpperCase()}
         </Link>
       </div>
     </header>

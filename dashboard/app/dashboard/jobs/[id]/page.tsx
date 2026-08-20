@@ -15,6 +15,7 @@ import {
   Users,
   Briefcase,
   Sparkles
+  , Trash2
 } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 import { getScoreColor, getStatusColor, formatDate } from '@/lib/utils';
@@ -33,10 +34,10 @@ export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
-  const { getJob, getCandidatesForJob, updateCandidateStatus, addCandidatesToJob } = useData();
+  const { getJob, getCandidatesForJob, updateCandidateStatus, addCandidatesToJob, deleteJob } = useData();
 
-  const job = getJob(jobId) || getJob('job-1');
-  const candidates = getCandidatesForJob(job ? job.id : 'job-1');
+  const job = getJob(jobId);
+  const candidates = getCandidatesForJob(jobId);
 
   // Filters state
   const [search, setSearch] = useState('');
@@ -49,6 +50,12 @@ export default function JobDetailPage() {
   const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
 
   if (!job) return <div>Job not found</div>;
+
+  const handleDeleteJob = async () => {
+    if (!window.confirm(`Delete "${job.title}" and all of its candidates?`)) return;
+    await deleteJob(job.id);
+    router.push('/dashboard/jobs');
+  };
 
   // Allowed file extensions for resume uploads
   const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc'];
@@ -108,37 +115,17 @@ export default function JobDetailPage() {
     }
   };
 
-  const simulateFileUpload = (files: File[]) => {
+  const simulateFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    const fileItems = files.map(f => ({ name: f.name, progress: 10 }));
+    const fileItems = files.map(f => ({ name: f.name, progress: 20 }));
     setUploadingFiles(fileItems);
-
-    // Simulate batch scoring progress
-    const interval = setInterval(() => {
-      setUploadingFiles(prev => {
-        const updated = prev.map(f => ({
-          ...f,
-          progress: Math.min(100, f.progress + 25)
-        }));
-        if (updated.every(f => f.progress >= 100)) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setUploadingFiles([]);
-            // Add new candidates to store
-            const newCandData = files.map((f, idx) => ({
-              name: f.name.replace(/\.[^/.]+$/, '').replace(/_/g, ' '),
-              email: `candidate.${idx + 1}@example.com`,
-              resumeFileName: f.name,
-              matchedSkills: job.detectedSkills.slice(0, Math.floor(Math.random() * 4) + 2),
-              missingSkills: job.detectedSkills.slice(4, 6),
-            }));
-            addCandidatesToJob(job.id, newCandData);
-          }, 600);
-        }
-        return updated;
-      });
-    }, 400);
+    try {
+      await addCandidatesToJob(job.id, files);
+      setUploadingFiles(files.map(f => ({ name: f.name, progress: 100 })));
+    } finally {
+      setTimeout(() => setUploadingFiles([]), 600);
+    }
   };
 
   const toggleSelectCandidate = (id: string) => {
@@ -177,6 +164,9 @@ export default function JobDetailPage() {
         </div>
 
         <div className="page-header-actions">
+          <button type="button" className="btn btn-secondary" onClick={handleDeleteJob}>
+            <Trash2 size={16} /> Delete Job
+          </button>
           <Link href={`/dashboard/jobs/${job.id}/export`} className="btn btn-secondary">
             <Share2 size={16} /> Export / Share
           </Link>

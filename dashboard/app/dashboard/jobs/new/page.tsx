@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Plus, X, ArrowLeft } from 'lucide-react';
-import { useData } from '@/lib/DataContext';
-import { allAvailableSkills } from '@/lib/mockData';
+import { API_BASE, getToken, useData } from '@/lib/DataContext';
+import type { Job } from '@/lib/types';
 import Link from 'next/link';
 
 export default function NewJobPage() {
@@ -16,18 +16,35 @@ export default function NewJobPage() {
   const [location, setLocation] = useState('San Francisco, CA');
   const [employmentType, setEmploymentType] = useState<'Full-time' | 'Part-time' | 'Contract' | 'Internship'>('Full-time');
   const [description, setDescription] = useState('');
-  const [detectedSkills, setDetectedSkills] = useState<string[]>(['Python', 'PostgreSQL', 'REST API', 'Docker']);
+  const [detectedSkills, setDetectedSkills] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState('');
 
-  // Extract skills dynamically as user types JD
+  useEffect(() => {
+    if (!description.trim()) return;
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch(`${API_BASE}/skills/extract`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({ jd_text: description }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setDetectedSkills(data.skills || []);
+        }
+      } catch (error) {
+        console.error('Failed to extract skills', error);
+      }
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [description]);
+
   const handleDescriptionChange = (text: string) => {
     setDescription(text);
-    const found = allAvailableSkills.filter(skill => 
-      text.toLowerCase().includes(skill.toLowerCase())
-    );
-    if (found.length > 0) {
-      setDetectedSkills(Array.from(new Set([...detectedSkills, ...found])));
-    }
+    if (!text.trim()) setDetectedSkills([]);
   };
 
   const removeSkill = (skillToRemove: string) => {
@@ -41,13 +58,13 @@ export default function NewJobPage() {
     }
   };
 
-  const handleSubmit = (status: 'Active' | 'Draft') => {
+  const handleSubmit = async (status: 'Active' | 'Draft') => {
     if (!title.trim() || !description.trim()) {
       alert('Please fill in Job Title and Description.');
       return;
     }
 
-    const newJob = addJob({
+    const newJob = await addJob({
       title,
       department,
       location,
@@ -119,7 +136,7 @@ export default function NewJobPage() {
           <select
             className="form-input"
             value={employmentType}
-            onChange={(e) => setEmploymentType(e.target.value as any)}
+            onChange={(e) => setEmploymentType(e.target.value as Job['employmentType'])}
           >
             <option value="Full-time">Full-time</option>
             <option value="Part-time">Part-time</option>

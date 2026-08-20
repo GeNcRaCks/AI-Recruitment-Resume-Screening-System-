@@ -2,17 +2,17 @@
 
 import React, { useState } from 'react';
 import { User, Bell, Shield, Key, Sparkles, Check } from 'lucide-react';
-import { useData } from '@/lib/DataContext';
+import { API_BASE, useData } from '@/lib/DataContext';
 
 export default function SettingsPage() {
-  const { user } = useData();
+  const { user, updateUser } = useData();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'api'>('profile');
   const [saved, setSaved] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    company: user.company,
+    name: user?.name || '',
+    email: user?.email || '',
+    company: user?.company_name || '',
   });
 
   const [toggles, setToggles] = useState({
@@ -21,10 +21,15 @@ export default function SettingsPage() {
     weeklyDigest: false,
   });
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      await updateUser(formData.name, formData.company);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("Failed to update user", err);
+    }
   };
 
   return (
@@ -69,7 +74,7 @@ export default function SettingsPage() {
 
                 <div className="settings-avatar-section">
                   <div className="settings-avatar">
-                    {user.name.charAt(0)}
+                    {user?.name?.charAt(0) || 'U'}
                   </div>
                   <div>
                     <button className="btn btn-secondary btn-sm">Change Avatar</button>
@@ -93,7 +98,8 @@ export default function SettingsPage() {
                       type="email"
                       className="form-input"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      disabled
+                      title="Email cannot be changed"
                     />
                   </div>
 
@@ -170,11 +176,11 @@ export default function SettingsPage() {
             <div>
               <div className="settings-section">
                 <h3>Groq LLM & Backend API Integration</h3>
-                <p className="section-desc">Configured for next week's Python FastAPI backend integration.</p>
+                <p className="section-desc">Connected to the active recruitment API and language model services.</p>
 
                 <div className="form-group">
                   <label className="form-label">Backend API URL</label>
-                  <input type="text" className="form-input" defaultValue="http://localhost:8000/api/v1" readOnly />
+                  <input type="text" className="form-input" defaultValue={API_BASE} readOnly />
                 </div>
 
                 <div className="form-group">
@@ -182,10 +188,6 @@ export default function SettingsPage() {
                   <input type="text" className="form-input" defaultValue="openai/gpt-oss-120b" readOnly />
                 </div>
 
-                <div style={{ padding: '16px', background: 'var(--color-primary-lighter)', color: 'var(--color-primary)', borderRadius: '8px', fontSize: '0.85rem' }}>
-                  <Sparkles size={16} style={{ display: 'inline', marginRight: 6 }} />
-                  Python backend endpoints (`src/api/`) will connect seamlessly next week.
-                </div>
               </div>
             </div>
           )}

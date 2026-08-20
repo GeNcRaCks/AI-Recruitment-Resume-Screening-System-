@@ -79,9 +79,6 @@ export default function LandingPage() {
             <Link href="/register" className="btn btn-primary btn-lg">
               Start Screening Free <ArrowRight size={18} />
             </Link>
-            <Link href="/dashboard" className="btn btn-secondary btn-lg">
-              Explore Demo Dashboard
-            </Link>
           </div>
 
           <div className="hero-stats">
@@ -243,7 +240,7 @@ export default function LandingPage() {
               {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="#fbbf24" stroke="none" />)}
             </div>
             <p className="testimonial-text">
-              "RecruitPro AI cut our resume screening time from 3 days down to 20 minutes. The candidate summaries and interview questions are shockingly accurate!"
+              &quot;RecruitPro AI cut our resume screening time from 3 days down to 20 minutes. The candidate summaries and interview questions are shockingly accurate!&quot;
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">SM</div>
@@ -259,7 +256,7 @@ export default function LandingPage() {
               {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="#fbbf24" stroke="none" />)}
             </div>
             <p className="testimonial-text">
-              "The side-by-side comparison and score breakdown give us complete confidence in our interview decisions. Our hiring managers love the PDF exports!"
+              &quot;The side-by-side comparison and score breakdown give us complete confidence in our interview decisions. Our hiring managers love the PDF exports!&quot;
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">DK</div>
@@ -275,7 +272,7 @@ export default function LandingPage() {
               {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="#fbbf24" stroke="none" />)}
             </div>
             <p className="testimonial-text">
-              "The skill extraction chip preview allows us to catch parser misses before screening even starts. It's an indispensable tool for our team."
+              &quot;The skill extraction chip preview allows us to catch parser misses before screening even starts. It&apos;s an indispensable tool for our team.&quot;
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">EL</div>

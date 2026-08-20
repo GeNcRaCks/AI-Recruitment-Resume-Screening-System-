@@ -3,7 +3,7 @@ from src.scoring.similarity import tfidf_similarity, semantic_similarity
 
 
 def compute_final_score(resume_text: str, jd_text: str, skill_match_ratio: float,
-                         w_skill: float = 0.3, w_tfidf: float = 0.3, w_semantic: float = 0.4) -> dict:
+                         w_skill: float = 0.6, w_tfidf: float = 0.1, w_semantic: float = 0.3) -> dict:
     total_weight = w_skill + w_tfidf + w_semantic
     if not math.isclose(total_weight, 1.0, rel_tol=1e-6):
         raise ValueError(f"Weights must sum to 1.0, got {total_weight} "

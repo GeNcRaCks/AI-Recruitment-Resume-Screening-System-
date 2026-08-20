@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Award,
   BarChart2
+  , Trash2
 } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 import { getScoreColor, getStatusColor, getRecommendationColor } from '@/lib/utils';
@@ -25,15 +26,21 @@ export default function CandidateDetailPage() {
   const jobId = params.id as string;
   const candidateId = params.candidateId as string;
 
-  const { getCandidate, getJob, updateCandidateStatus, updateCandidateNotes } = useData();
+  const { getCandidate, getJob, updateCandidateStatus, updateCandidateNotes, deleteCandidate } = useData();
 
-  const candidate = getCandidate(candidateId) || getCandidate('c1');
-  const job = getJob(jobId) || getJob('job-1');
+  const candidate = getCandidate(candidateId);
+  const job = getJob(jobId);
 
   const [notes, setNotes] = useState(candidate ? candidate.recruiterNotes : '');
   const [saveStatus, setSaveStatus] = useState('');
 
   if (!candidate || !job) return <div>Candidate not found</div>;
+
+  const handleDeleteCandidate = async () => {
+    if (!window.confirm(`Delete candidate "${candidate.name}"?`)) return;
+    await deleteCandidate(candidate.id);
+    router.push(`/dashboard/jobs/${job.id}`);
+  };
 
   const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
@@ -50,6 +57,10 @@ export default function CandidateDetailPage() {
         <Link href={`/dashboard/jobs/${job.id}`} className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }}>
           <ArrowLeft size={16} /> Back to Candidates Pipeline
         </Link>
+
+        <button type="button" className="btn btn-secondary" onClick={handleDeleteCandidate}>
+          <Trash2 size={16} /> Delete Candidate
+        </button>
 
         {/* Status Triage Dropdown (Scene 6) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

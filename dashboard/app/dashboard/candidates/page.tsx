@@ -2,19 +2,26 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Briefcase, Award } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { useData } from '@/lib/DataContext';
-import { getScoreColor, getStatusColor } from '@/lib/utils';
+import { getStatusColor } from '@/lib/utils';
 import { CandidateStatus } from '@/lib/types';
 
 export default function AllCandidatesPage() {
-  const { candidates, jobs, updateCandidateStatus } = useData();
-  const [search, setSearch] = useState('');
+  const { candidates, jobs, updateCandidateStatus, deleteCandidate } = useData();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [statusFilter, setStatusFilter] = useState('All');
 
   const filteredCandidates = candidates.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || 
-                          c.email.toLowerCase().includes(search.toLowerCase());
+    const job = jobs.find((item) => item.id === c.jobId);
+    const searchText = search.toLowerCase().trim();
+    const matchesSearch = !searchText ||
+      c.name.toLowerCase().includes(searchText) ||
+      c.email.toLowerCase().includes(searchText) ||
+      c.matchedSkills.some((skill) => skill.toLowerCase().includes(searchText)) ||
+      (job?.title.toLowerCase().includes(searchText) ?? false);
     const matchesStatus = statusFilter === 'All' || c.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -112,6 +119,16 @@ export default function AllCandidatesPage() {
                       </select>
                     </td>
                     <td>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        title="Delete candidate"
+                        onClick={() => {
+                          if (window.confirm(`Delete candidate "${c.name}"?`)) deleteCandidate(c.id);
+                        }}
+                      >
+                        <Trash2 size={15} />
+                      </button>
                       <Link 
                         href={`/dashboard/jobs/${c.jobId}/candidates/${c.id}`}
                         className="btn btn-ghost btn-sm"

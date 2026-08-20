@@ -4,48 +4,58 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, Download, Mail, FileSpreadsheet, FileText, CheckCircle2 } from 'lucide-react';
-import { useData } from '@/lib/DataContext';
-import { downloadCSV } from '@/lib/utils';
+import { API_BASE, getToken, useData } from '@/lib/DataContext';
 
 export default function ExportPage() {
   const params = useParams();
   const jobId = params.id as string;
   const { getJob, getCandidatesForJob } = useData();
 
-  const job = getJob(jobId) || getJob('job-1');
-  const candidates = getCandidatesForJob(job ? job.id : 'job-1');
+  const job = getJob(jobId);
+  const candidates = getCandidatesForJob(jobId);
   const shortlist = candidates.filter(c => c.status === 'Interview' || c.scores.finalScore >= 0.7);
 
-  const [email, setEmail] = useState('hiring.manager@company.com');
-  const [message, setMessage] = useState('Hi, attached is the candidate shortlist for Senior Backend Engineer. Top candidates are highlighted with AI scores and summaries.');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [exporting, setExporting] = useState<'pdf' | 'csv' | null>(null);
+  const [exportError, setExportError] = useState('');
 
   if (!job) return <div>Job not found</div>;
 
-  const handleExportCSV = () => {
-    const csvData = shortlist.map(c => ({
-      Rank: c.scores.finalScore,
-      Name: c.name,
-      Email: c.email,
-      FinalScore: c.scores.finalScore,
-      SkillMatchRatio: c.scores.skillMatchRatio,
-      Recommendation: c.aiRecommendation,
-      Status: c.status,
-      MatchedSkills: c.matchedSkills.join('; '),
-      MissingSkills: c.missingSkills.join('; '),
-      Summary: c.aiSummary,
-      RecruiterNotes: c.recruiterNotes,
-    }));
+  const downloadReport = async (format: 'pdf' | 'csv') => {
+    setExporting(format);
+    setExportError('');
+    try {
+      const response = await fetch(`${API_BASE}/jobs/${job.id}/candidates/export-${format}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.detail || `Unable to generate ${format.toUpperCase()} report.`);
+      }
 
-    downloadCSV(csvData, `${job.title.replace(/\s+/g, '_')}_Shortlist.csv`);
+      const blob = await response.blob();
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const filenameMatch = contentDisposition?.match(/filename="?([^";]+)"?/i);
+      const filename = filenameMatch?.[1] || `${job.title.replace(/[^a-z0-9]+/gi, '_')}_candidates.${format}`;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setExportError(error instanceof Error ? error.message : `Unable to generate ${format.toUpperCase()} report.`);
+    } finally {
+      setExporting(null);
+    }
   };
 
-  const handleExportPDF = () => {
-    window.print();
-  };
-
-  const handleSendEmail = (e: React.FormEvent) => {
+  const handleSendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate email domain and TLD (e.g., user@domain.com)
@@ -56,8 +66,22 @@ export default function ExportPage() {
     }
     
     setEmailError('');
-    setEmailSent(true);
-    setTimeout(() => setEmailSent(false), 3000);
+    try {
+      const response = await fetch(`${API_BASE}/jobs/${job.id}/candidates/email-shortlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ emails: [email] }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || 'Unable to send shortlist email.');
+      setEmailSent(true);
+      setTimeout(() => setEmailSent(false), 3000);
+    } catch (error) {
+      setEmailError(error instanceof Error ? error.message : 'Unable to send shortlist email.');
+    }
   };
 
   return (
@@ -73,28 +97,34 @@ export default function ExportPage() {
       </div>
 
       <div className="export-options">
-        <div className="export-option" onClick={handleExportPDF}>
+        <div className="export-option">
           <div className="export-option-icon" style={{ background: 'var(--color-primary-light)', color: 'var(--color-primary)' }}>
             <FileText size={28} />
           </div>
           <h3>Export PDF Summary Report</h3>
           <p>Download a clean formatted PDF with candidate score breakdowns and AI summaries.</p>
-          <button className="btn btn-primary btn-sm" style={{ marginTop: '16px' }}>
-            <Download size={14} /> Download PDF
+          <button type="button" className="btn btn-primary btn-sm" style={{ marginTop: '16px' }} onClick={() => downloadReport('pdf')} disabled={exporting !== null}>
+            <Download size={14} /> {exporting === 'pdf' ? 'Preparing PDF...' : 'Download PDF'}
           </button>
         </div>
 
-        <div className="export-option" onClick={handleExportCSV}>
+        <div className="export-option">
           <div className="export-option-icon" style={{ background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
             <FileSpreadsheet size={28} />
           </div>
           <h3>Export CSV Spreadsheet</h3>
           <p>Download structured CSV data compatible with Excel, Google Sheets, and ATS systems.</p>
-          <button className="btn btn-success btn-sm" style={{ marginTop: '16px' }}>
-            <Download size={14} /> Download CSV
+          <button type="button" className="btn btn-success btn-sm" style={{ marginTop: '16px' }} onClick={() => downloadReport('csv')} disabled={exporting !== null}>
+            <Download size={14} /> {exporting === 'csv' ? 'Preparing CSV...' : 'Download CSV'}
           </button>
         </div>
       </div>
+
+      {exportError && (
+        <div className="form-error-message" style={{ color: 'var(--color-error)', marginTop: '12px' }}>
+          {exportError}
+        </div>
+      )}
 
       {/* Email Shortlist to Hiring Manager */}
       <div className="email-form">

@@ -27,15 +27,18 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const pathname = usePathname();
-  const { user } = useData();
+  const { user, jobs, logout } = useData();
+  const selectedJobId = jobs[0]?.id;
+  const displayName = user?.name || 'Recruiter';
+  const companyName = user?.company_name || 'Recruitment workspace';
 
   const navItems = [
-    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Jobs', href: '/dashboard/jobs', icon: Briefcase },
-    { label: 'Candidates', href: '/dashboard/candidates', icon: Users },
-    { label: 'Bulk Upload', href: '/dashboard/jobs/job-1', icon: UploadCloud },
-    { label: 'Reports', href: '/dashboard/jobs/job-1/export', icon: BarChart3 },
-    { label: 'Settings', href: '/dashboard/settings', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { id: 'jobs', label: 'Jobs', href: '/dashboard/jobs', icon: Briefcase },
+    { id: 'candidates', label: 'Candidates', href: '/dashboard/candidates', icon: Users },
+    { id: 'bulk-upload', label: 'Bulk Upload', href: selectedJobId ? `/dashboard/jobs/${selectedJobId}` : '/dashboard/jobs', icon: UploadCloud },
+    { id: 'reports', label: 'Reports', href: selectedJobId ? `/dashboard/jobs/${selectedJobId}/export` : '/dashboard/jobs', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
   return (
@@ -65,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
           const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
           return (
             <Link
-              key={item.href}
+              key={item.id}
               href={item.href}
               className={`sidebar-item ${isActive ? 'active' : ''}`}
             >
@@ -79,13 +82,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       <div className="sidebar-footer">
         <div className="sidebar-user">
           <div className="sidebar-avatar">
-            {user.name.charAt(0)}
+            {displayName.charAt(0).toUpperCase()}
           </div>
           <div className="sidebar-user-info">
-            <div className="sidebar-user-name">{user.name}</div>
-            <div className="sidebar-user-role">{user.company}</div>
+            <div className="sidebar-user-name">{displayName}</div>
+            <div className="sidebar-user-role">{companyName}</div>
           </div>
-          <Link href="/login" style={{ marginLeft: 'auto', color: 'var(--sidebar-text)' }} title="Logout">
+          <Link href="/login" onClick={logout} style={{ marginLeft: 'auto', color: 'var(--sidebar-text)' }} title="Logout">
             <LogOut size={16} />
           </Link>
         </div>

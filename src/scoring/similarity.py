@@ -1,7 +1,9 @@
+# src/scoring/similarity.py
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer, util
+
 
 def tfidf_similarity(resume_text: str, jd_text: str) -> float:
     """
@@ -9,12 +11,18 @@ def tfidf_similarity(resume_text: str, jd_text: str) -> float:
     Returns 0.0 (instead of crashing) if either text is empty or contains
     only stopwords/punctuation — both are realistic edge cases given some
     resumes may have failed extraction upstream or be very short.
+
+    Compares the full normalized resume against the full JD using unigram
+    vocabulary and sublinear term frequency scaling.
     """
     if not resume_text.strip() or not jd_text.strip():
         return 0.0
 
     try:
-        vectorizer = TfidfVectorizer(stop_words="english")
+        vectorizer = TfidfVectorizer(
+            stop_words="english",
+            sublinear_tf=True,
+        )
         tfidf = vectorizer.fit_transform([resume_text, jd_text])
     except ValueError:
         # "empty vocabulary" — text had no words left after stopword removal
@@ -24,6 +32,7 @@ def tfidf_similarity(resume_text: str, jd_text: str) -> float:
     if np.isnan(score):
         return 0.0
     return float(score)
+
 
 _model = SentenceTransformer("all-MiniLM-L6-v2")
 _MAX_WORDS_PER_CHUNK = 200   # keeps each chunk within the model's ~256 token limit
@@ -43,6 +52,10 @@ def _chunk_text(text: str, max_words: int = _MAX_WORDS_PER_CHUNK) -> list[str]:
 
 
 def semantic_similarity(resume_text: str, jd_text: str) -> float:
+    """
+    Compares the full normalized resume against the full JD so the semantic
+    score uses the same text surface as the lexical score.
+    """
     if not resume_text.strip() or not jd_text.strip():
         return 0.0
 

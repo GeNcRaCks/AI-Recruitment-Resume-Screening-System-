@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Mail, Lock, User, Building, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Building, ArrowRight, CheckCircle2, Circle, Loader2 } from 'lucide-react';
+import { useData } from '@/lib/DataContext';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,6 +16,9 @@ export default function RegisterPage() {
   });
   const [passwordError, setPasswordError] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { register } = useData();
 
   // Password requirement checks
   const passwordChecks = useMemo(() => ({
@@ -27,9 +31,10 @@ export default function RegisterPage() {
 
   const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    setError('');
 
     if (!isPasswordValid) {
       setPasswordError('Please meet all password requirements below.');
@@ -37,7 +42,16 @@ export default function RegisterPage() {
     }
 
     setPasswordError('');
-    router.push('/dashboard');
+    setLoading(true);
+    
+    try {
+      await register(formData.name, formData.email, formData.password, formData.company);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to register');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,7 +76,7 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="Sarah Mitchell"
+                  placeholder="Enter your full name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
@@ -77,7 +91,7 @@ export default function RegisterPage() {
                 <input
                   type="email"
                   className="form-input"
-                  placeholder="sarah@company.com"
+                  placeholder="you@company.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -92,7 +106,7 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="TechVision Inc."
+                  placeholder="Enter your company name"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                   required
@@ -159,12 +173,14 @@ export default function RegisterPage() {
               <label htmlFor="terms">I agree to the Terms of Service &amp; Privacy Policy</label>
             </div>
 
+            {error && <div className="form-error-message" style={{ color: 'var(--color-error)', marginBottom: '12px' }}>{error}</div>}
+
             <button
               type="submit"
               className="btn btn-primary btn-full btn-lg"
-              disabled={formData.password.length > 0 && !isPasswordValid}
+              disabled={(formData.password.length > 0 && !isPasswordValid) || loading}
             >
-              Get Started Free <ArrowRight size={18} />
+              {loading ? <Loader2 className="animate-spin" size={18} /> : 'Get Started Free'} <ArrowRight size={18} />
             </button>
           </form>
 

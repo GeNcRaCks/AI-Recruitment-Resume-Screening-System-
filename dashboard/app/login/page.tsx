@@ -3,16 +3,36 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { API_BASE, useData } from '@/lib/DataContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('sarah@company.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    return new URLSearchParams(window.location.search).get('oauth_error') || '';
+  });
+  const [loading, setLoading] = useState(false);
+  const { login } = useData();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const startOAuth = (provider: 'google' | 'linkedin') => {
+    window.location.href = `${API_BASE}/auth/${provider}/login`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/dashboard');
+    setError('');
+    setLoading(true);
+    try {
+      await login(email, password);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,7 +75,7 @@ export default function LoginPage() {
                 <input
                   type="password"
                   className="form-input"
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -68,8 +88,10 @@ export default function LoginPage() {
               <label htmlFor="remember">Remember me for 30 days</label>
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg">
-              Sign In <ArrowRight size={18} />
+            {error && <div className="form-error-message" style={{ color: 'var(--color-error)', marginBottom: '12px' }}>{error}</div>}
+
+            <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={18} /> : 'Sign In'} <ArrowRight size={18} />
             </button>
           </form>
 
@@ -78,12 +100,12 @@ export default function LoginPage() {
           </div>
 
           <div className="social-buttons">
-            <button type="button" className="social-btn">Google</button>
-            <button type="button" className="social-btn">LinkedIn</button>
+            <button type="button" className="social-btn" onClick={() => startOAuth('google')}>Google</button>
+            <button type="button" className="social-btn" onClick={() => startOAuth('linkedin')}>LinkedIn</button>
           </div>
 
           <p className="auth-switch">
-            Don't have an account? <Link href="/register">Create account</Link>
+            Don&apos;t have an account? <Link href="/register">Create account</Link>
           </p>
         </div>
       </div>

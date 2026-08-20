@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 import { formatDate } from '@/lib/utils';
-import { scoreDistributionData } from '@/lib/mockData';
 import { 
   BarChart, 
   Bar, 
@@ -26,18 +25,27 @@ import {
 } from 'recharts';
 
 export default function DashboardHome() {
-  const { jobs, activities, stats, user } = useData();
+  const { jobs, candidates, activities, stats, user } = useData();
+  const displayName = user?.name || 'Recruiter';
 
   const activeJobs = jobs.filter(j => j.status === 'Active');
+  const scoreDistributionData = Array.from({ length: 10 }, (_, index) => {
+    const lowerBound = index / 10;
+    const upperBound = (index + 1) / 10;
+    return {
+      range: `${lowerBound.toFixed(1)}-${upperBound.toFixed(1)}`,
+      count: candidates.filter((candidate) => candidate.scores.finalScore >= lowerBound && candidate.scores.finalScore < upperBound).length,
+    };
+  });
 
   return (
     <div>
       {/* Welcome Banner */}
       <div className="page-header">
         <div>
-          <h1>Welcome back, {user.name.split(' ')[0]} 👋</h1>
+          <h1>Welcome back, {displayName.split(' ')[0]} 👋</h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-            Here is what's happening with your recruitment pipeline today.
+            Here is what&apos;s happening with your recruitment pipeline today.
           </p>
         </div>
 
@@ -122,7 +130,7 @@ export default function DashboardHome() {
                     <YAxis tick={{ fontSize: 11 }} />
                     <Tooltip 
                       contentStyle={{ background: '#fff', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: 'none' }}
-                      formatter={(val: any) => [`${val} candidates`, 'Count']}
+                      formatter={(val: number | string | undefined) => [`${val ?? 0} candidates`, 'Count']}
                     />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {scoreDistributionData.map((entry, index) => (
