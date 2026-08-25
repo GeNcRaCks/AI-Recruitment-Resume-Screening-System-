@@ -1,11 +1,15 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 from src.db.models import Base, Candidate
 from src.parsing.candidate_info import extract_candidate_info
 
+load_dotenv() 
+
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./recruitment.db")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine)
 
 def init_db():

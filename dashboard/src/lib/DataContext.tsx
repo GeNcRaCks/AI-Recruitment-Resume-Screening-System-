@@ -93,6 +93,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const activities: ActivityItem[] = [];
 
   const stats = {
+    totalJobs: jobs.length,
     totalCandidates: candidates.length,
     activeJobs: jobs.filter((job) => job.status === 'Active').length,
     pendingReview: candidates.filter((candidate) => candidate.status === 'New' || candidate.status === 'Screening').length,
