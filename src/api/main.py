@@ -21,6 +21,7 @@ from src.parsing.clean import normalize_text
 from src.parsing.candidate_info import extract_candidate_info
 from src.nlp.skill_extraction import load_skills_db, build_matcher, extract_skills
 from src.scoring.final_score import compute_final_score
+from src.scoring.similarity import embed_text
 from src.generation.pipeline import generate_interview_package
 
 app = FastAPI(title="AI Recruitment API")
@@ -63,7 +64,7 @@ def _job_skills(jd_text: str) -> list[str]:
     return sorted(extract_skills(jd_text, _matcher))
 
 
-def _validate_and_score(db, job, filename, file_bytes, source):
+def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None):
 
     ext = os.path.splitext(filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
@@ -90,7 +91,7 @@ def _validate_and_score(db, job, filename, file_bytes, source):
     matched = sorted(found & jd_skills)
     missing = sorted(jd_skills - found)
     ratio = len(matched) / max(len(jd_skills), 1)
-    scores = compute_final_score(raw, job.jd_text, ratio)
+    scores = compute_final_score(raw, job.jd_text, ratio, jd_embedding=jd_embedding)
     package = generate_interview_package(job.jd_text, matched, missing, scores["final_score"])
 
     candidate = Candidate(
@@ -151,9 +152,10 @@ async def upload_resumes_bulk(job_id: int, files: list[UploadFile], db: Session 
     if not job:
         raise HTTPException(404, f"Job {job_id} not found.")
     results = {"succeeded": [], "failed": []}
+    jd_embedding = embed_text(job.jd_text) if job.jd_text.strip() else None
     for file in files:
         try:
-            c = _validate_and_score(db, job, file.filename, await file.read(), "manual")
+            c = _validate_and_score(db, job, file.filename, await file.read(), "manual", jd_embedding)
             results["succeeded"].append({"id": c.id, "name": c.name, "email": c.email,
                                          "resume_filename": c.resume_filename, "final_score": c.final_score})
         except ValueError as e:

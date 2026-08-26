@@ -51,7 +51,12 @@ def _chunk_text(text: str, max_words: int = _MAX_WORDS_PER_CHUNK) -> list[str]:
     return [" ".join(words[i:i + max_words]) for i in range(0, len(words), max_words)]
 
 
-def semantic_similarity(resume_text: str, jd_text: str) -> float:
+def embed_text(text: str):
+    """Encode one text so callers can reuse the embedding across comparisons."""
+    return _model.encode(text, convert_to_tensor=True)
+
+
+def semantic_similarity(resume_text: str, jd_text: str, jd_embedding=None) -> float:
     """
     Compares the full normalized resume against the full JD so the semantic
     score uses the same text surface as the lexical score.
@@ -63,7 +68,8 @@ def semantic_similarity(resume_text: str, jd_text: str) -> float:
     resume_chunk_embeddings = _model.encode(resume_chunks, convert_to_tensor=True)
     resume_embedding = resume_chunk_embeddings.mean(dim=0)   # average across chunks
 
-    jd_embedding = _model.encode(jd_text, convert_to_tensor=True)
+    if jd_embedding is None:
+        jd_embedding = embed_text(jd_text)
 
     score = util.cos_sim(resume_embedding, jd_embedding).item()
     return float(score)
