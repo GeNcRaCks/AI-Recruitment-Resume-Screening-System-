@@ -8,8 +8,6 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 import csv
 import io
-import smtplib
-from email.message import EmailMessage
 from fpdf import FPDF
 
 from src.db.database import get_db, init_db
@@ -23,6 +21,7 @@ from src.nlp.skill_extraction import load_skills_db, build_matcher, extract_skil
 from src.scoring.final_score import compute_final_score
 from src.scoring.similarity import embed_text
 from src.generation.pipeline import generate_interview_package
+from src.notifications.email import send_shortlist_email
 
 app = FastAPI(title="AI Recruitment API")
 app.add_middleware(
@@ -322,26 +321,8 @@ def email_shortlist(job_id: int, payload: EmailShortlistRequest, db: Session = D
         body += "\n"
     body += "Log into the AI Recruitment Dashboard to view full details.\n"
 
-    SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-    SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-    SMTP_USER = os.getenv("SMTP_USER", "")
-    SMTP_PASS = os.getenv("SMTP_PASS", "")
-
-    if not SMTP_USER or not SMTP_PASS:
-        raise HTTPException(503, "Email delivery is not configured. Set SMTP_USER and SMTP_PASS in the backend environment.")
-
     try:
-        msg = EmailMessage()
-        msg.set_content(body)
-        msg['Subject'] = f"Candidate Shortlist: {job.title}"
-        msg['From'] = SMTP_USER
-        msg['To'] = ", ".join(payload.emails)
-
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASS)
-        server.send_message(msg)
-        server.quit()
+        send_shortlist_email(payload.emails, job.title, body)
         return {"message": f"Email(s) sent successfully to {len(payload.emails)} recipient(s)."}
     except Exception as e:
         raise HTTPException(500, f"Failed to send email: {str(e)}")
