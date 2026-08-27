@@ -63,6 +63,13 @@ def _job_skills(jd_text: str) -> list[str]:
     return sorted(extract_skills(jd_text, _matcher))
 
 
+def _get_owned_job(job_id: int, user: User, db):
+    job = db.query(Job).filter(Job.id == job_id, Job.created_by == user.id).first()
+    if not job:
+        raise HTTPException(404, f"Job {job_id} not found.")
+    return job
+
+
 def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None):
 
     ext = os.path.splitext(filename)[1].lower()
@@ -121,7 +128,7 @@ def extract_job_skills(payload: SkillExtractionRequest, user: User = Depends(get
 
 @app.get("/jobs")
 def list_jobs(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    jobs = db.query(Job).order_by(Job.created_at.desc()).all()
+    jobs = db.query(Job).filter(Job.created_by == user.id).order_by(Job.created_at.desc()).all()
     return [{"id": j.id, "title": j.title, "jd_text": j.jd_text,
              "detected_skills": _job_skills(j.jd_text), "created_at": j.created_at,
              "candidate_count": len(j.candidates),
@@ -130,26 +137,20 @@ def list_jobs(db: Session = Depends(get_db), user: User = Depends(get_current_us
 
 @app.get("/jobs/{job_id}")
 def get_job(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
     return {"id": job.id, "title": job.title, "jd_text": job.jd_text,
         "detected_skills": _job_skills(job.jd_text), "created_at": job.created_at}
 
 @app.delete("/jobs/{job_id}")
 def delete_job(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
     db.delete(job); db.commit()
     return {"deleted": job_id}
 
 @app.post("/jobs/{job_id}/upload-resumes")
 async def upload_resumes_bulk(job_id: int, files: list[UploadFile], db: Session = Depends(get_db),
                                user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
     results = {"succeeded": [], "failed": []}
     jd_embedding = embed_text(job.jd_text) if job.jd_text.strip() else None
     for file in files:
@@ -176,8 +177,7 @@ async def public_apply(job_id: int, file: UploadFile, db: Session = Depends(get_
 def get_ranked_candidates(job_id: int, min_score: Optional[float] = Query(None, ge=0, le=1),
                            status: Optional[str] = None, sort_by: str = "final_score",
                            order: str = "desc", db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    if not db.query(Job).filter(Job.id == job_id).first():
-        raise HTTPException(404, f"Job {job_id} not found.")
+    _get_owned_job(job_id, user, db)
     q = db.query(Candidate).filter(Candidate.job_id == job_id)
     if min_score is not None:
         q = q.filter(Candidate.final_score >= min_score)
@@ -191,7 +191,8 @@ def get_ranked_candidates(job_id: int, min_score: Optional[float] = Query(None, 
 
 @app.get("/candidates/{candidate_id}")
 def get_candidate_detail(candidate_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    c = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    c = (db.query(Candidate).join(Job)
+         .filter(Candidate.id == candidate_id, Job.created_by == user.id).first())
     if not c:
         raise HTTPException(404, f"Candidate {candidate_id} not found.")
     return {"id": c.id, "name": c.name, "email": c.email, "resume_filename": c.resume_filename,
@@ -207,7 +208,8 @@ def get_candidate_detail(candidate_id: int, db: Session = Depends(get_db), user:
 def update_candidate(candidate_id: int, payload: CandidateStatusUpdate, db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
 
-    c = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    c = (db.query(Candidate).join(Job)
+         .filter(Candidate.id == candidate_id, Job.created_by == user.id).first())
     if not c:
         raise HTTPException(404, f"Candidate {candidate_id} not found.")
     valid_statuses = {"New", "Reviewed", "Screening", "Interview", "Offered", "Rejected", "Hired"}
@@ -222,7 +224,8 @@ def update_candidate(candidate_id: int, payload: CandidateStatusUpdate, db: Sess
 
 @app.delete("/candidates/{candidate_id}")
 def delete_candidate(candidate_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    candidate = (db.query(Candidate).join(Job)
+                 .filter(Candidate.id == candidate_id, Job.created_by == user.id).first())
     if not candidate:
         raise HTTPException(404, f"Candidate {candidate_id} not found.")
     db.delete(candidate)
@@ -232,9 +235,7 @@ def delete_candidate(candidate_id: int, db: Session = Depends(get_db), user: Use
 
 @app.get("/jobs/{job_id}/candidates/export-csv")
 def export_candidates_csv(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
 
     candidates = db.query(Candidate).filter(Candidate.job_id == job_id).order_by(Candidate.final_score.desc()).all()
     output = io.StringIO()
@@ -259,9 +260,7 @@ def export_candidates_csv(job_id: int, db: Session = Depends(get_db), user: User
 
 @app.get("/jobs/{job_id}/candidates/export-pdf")
 def export_candidates_pdf(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
 
     candidates = db.query(Candidate).filter(Candidate.job_id == job_id).order_by(Candidate.final_score.desc()).all()
 
@@ -302,9 +301,7 @@ def export_candidates_pdf(job_id: int, db: Session = Depends(get_db), user: User
 
 @app.post("/jobs/{job_id}/candidates/email-shortlist")
 def email_shortlist(job_id: int, payload: EmailShortlistRequest, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(404, f"Job {job_id} not found.")
+    job = _get_owned_job(job_id, user, db)
     
     # Simple top 5 candidates
     candidates = db.query(Candidate).filter(Candidate.job_id == job_id).order_by(Candidate.final_score.desc()).limit(5).all()
