@@ -4,6 +4,16 @@ __pycache__/
 .env
 *.db
 .ipynb_checkpoints/
-.env
 .env.local
 .env.*.local
+
+# Data directories — runtime artifacts and PII, not in source control
+data/resumes/
+data/uploads/
+data/parsed_output/
+data/*.csv
+data/week5_sample_output.json
+
+# Development-only notebooks and logs
+notebooks/
+docs/weekly_logs/

@@ -161,51 +161,57 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const jobsRes = await fetch(`${API_BASE}/jobs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (jobsRes.ok) {
-        const jobsData = await jobsRes.json();
-        const allCandidates: Candidate[] = [];
-        for (const j of jobsData) {
-          const cRes = await fetch(`${API_BASE}/jobs/${j.id}/candidates`, {
-            headers: { Authorization: `Bearer ${token}` }
+      if (!jobsRes.ok) return;
+      const jobsData = await jobsRes.json();
+
+      // Fetch all job candidate lists in parallel, with full details embedded.
+      // This replaces the previous sequential nested loop that made N×M API
+      // calls (1 /jobs + N /jobs/{id}/candidates + N×M /candidates/{id}).
+      // Now it's 1 /jobs + N parallel /jobs/{id}/candidates?include_details=true.
+      const perJobResults = await Promise.all(
+        jobsData.map(async (j: { id: number }) => {
+          const cRes = await fetch(
+            `${API_BASE}/jobs/${j.id}/candidates?include_details=true`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          if (!cRes.ok) return { jobId: j.id, candidates: [] };
+          const cData = await cRes.json();
+          return { jobId: j.id, candidates: cData };
+        })
+      );
+
+      const allCandidates: Candidate[] = [];
+      for (const { jobId, candidates: cData } of perJobResults) {
+        for (const c of cData) {
+          allCandidates.push({
+            id: String(c.id),
+            jobId: String(jobId),
+            name: c.name,
+            email: c.email || '',
+            resumeFileName: c.resume_filename || c.name,
+            resumeText: c.resume_text || '',
+            scores: {
+              skillMatchRatio: c.skill_match_ratio || c.final_score || 0,
+              tfidfSimilarity: c.tfidf_similarity || c.final_score || 0,
+              semanticSimilarity: c.semantic_similarity || c.final_score || 0,
+              finalScore: c.final_score || 0
+            },
+            matchedSkills: c.matched_skills || [],
+            missingSkills: c.missing_skills || [],
+            allSkillsFound: c.matched_skills || [],
+            aiSummary: c.summary || '',
+            aiRecommendation: (c.final_score || 0) > 0.7 ? 'Interview' : (c.final_score || 0) > 0.4 ? 'Hold' : 'Reject',
+            interviewQuestions: parseInterviewQuestions(c.questions),
+            aiFeedback: c.feedback || '',
+            status: c.status,
+            recruiterNotes: c.notes || '',
+            experience: 'Unknown',
+            uploadedAt: new Date().toISOString(),
+            processedAt: new Date().toISOString()
           });
-          if (cRes.ok) {
-            const cData = await cRes.json();
-            for (const c of cData) {
-              const detailRes = await fetch(`${API_BASE}/candidates/${c.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
-              const detail = detailRes.ok ? await detailRes.json() : c;
-              allCandidates.push({
-                id: String(c.id),
-                jobId: String(j.id),
-                name: c.name,
-                email: c.email || '',
-                resumeFileName: c.resume_filename || c.name,
-                resumeText: detail?.resume_text || '',
-                scores: {
-                  skillMatchRatio: detail?.skill_match_ratio || c.final_score || 0,
-                  tfidfSimilarity: detail?.tfidf_similarity || c.final_score || 0,
-                  semanticSimilarity: detail?.semantic_similarity || c.final_score || 0,
-                  finalScore: detail?.final_score || c.final_score || 0
-                },
-                matchedSkills: detail?.matched_skills || c.matched_skills || [],
-                missingSkills: detail?.missing_skills || [],
-                allSkillsFound: detail?.matched_skills || c.matched_skills || [],
-                aiSummary: detail?.summary || '',
-                aiRecommendation: (detail?.final_score || c.final_score || 0) > 0.7 ? 'Interview' : (detail?.final_score || c.final_score || 0) > 0.4 ? 'Hold' : 'Reject',
-                interviewQuestions: parseInterviewQuestions(detail?.questions),
-                aiFeedback: detail?.feedback || '',
-                status: c.status,
-                recruiterNotes: detail?.notes || '',
-                experience: 'Unknown',
-                uploadedAt: new Date().toISOString(),
-                processedAt: new Date().toISOString()
-              });
-            }
-          }
         }
-        setCandidates(allCandidates);
       }
+      setCandidates(allCandidates);
     } catch (e) {
       console.error("Failed to fetch candidates", e);
     }

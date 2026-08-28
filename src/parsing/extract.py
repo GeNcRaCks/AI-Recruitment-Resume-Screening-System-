@@ -6,7 +6,12 @@ Handles:
   and corrupted files, and detection of scanned (image-only) PDFs.
 - DOCX: paragraphs, tables (including nested tables), text boxes/shapes,
   and headers/footers — all walked in true document reading order.
+
+Two entry points are provided:
+- extract_resume_text(path)       — file-path based (kept for compatibility)
+- extract_resume_text_bytes(b, ext) — in-memory bytes (no temp file on disk)
 """
+import io
 import os
 from docx import Document
 from docx.oxml.ns import qn
@@ -18,6 +23,29 @@ import pdfplumber
 
 class PDFExtractionError(Exception):
     """Raised when a PDF cannot be read at all (corrupted, encrypted, etc.)."""
+
+def _extract_text_from_pdf_stream(stream) -> str:
+    """Core PDF extraction logic operating on a file-like stream."""
+    text_parts = []
+    try:
+        with pdfplumber.open(stream) as pdf:
+            for page in pdf.pages:
+                try:
+                    page_text = page.extract_text(layout=True) or ""
+                except TypeError:
+                    page_text = page.extract_text() or ""
+                text_parts.append(page_text)
+    except Exception as e:
+        raise PDFExtractionError(f"Could not read PDF: {e}") from e
+
+    full_text = "\n".join(text_parts).strip()
+    if not full_text:
+        raise PDFExtractionError(
+            "PDF produced no extractable text. This usually means it's a "
+            "scanned/image-based PDF with no text layer. OCR (e.g. "
+            "pytesseract) would be needed to read it — not handled here."
+        )
+    return full_text
 
 def extract_text_from_pdf(path: str) -> str:
     text_parts = []
@@ -138,6 +166,39 @@ def extract_resume_text(path: str) -> str:
     elif lower.endswith(".docx"):
         return extract_text_from_docx(path)
     elif lower.endswith(".doc"):
-        return extract_text_from_docx(path)  
+        return extract_text_from_docx(path)
     else:
         raise ValueError(f"Unsupported file format: {path}")
+
+
+def extract_resume_text_bytes(file_bytes: bytes, ext: str) -> str:
+    """
+    In-memory equivalent of extract_resume_text — accepts raw bytes and a
+    file extension instead of a file path. No temp file is written to disk.
+    Both pdfplumber and python-docx accept BytesIO streams natively.
+    """
+    ext = ext.lower()
+    stream = io.BytesIO(file_bytes)
+    if ext == ".pdf":
+        return _extract_text_from_pdf_stream(stream)
+    elif ext in (".docx", ".doc"):
+        doc = Document(stream)
+        parts = []
+        for block in _iter_block_items(doc):
+            if isinstance(block, Paragraph):
+                if block.text.strip():
+                    parts.append(block.text)
+            elif isinstance(block, Table):
+                for row in block.rows:
+                    for cell in row.cells:
+                        cell_text = _extract_cell_text(cell)
+                        if cell_text.strip():
+                            parts.append(cell_text)
+        parts.extend(_extract_textboxes(doc))
+        parts.extend(_extract_headers_footers(doc))
+        full_text = "\n".join(parts).strip()
+        if not full_text:
+            raise ValueError("File produced no extractable text — it may be empty or corrupted.")
+        return full_text
+    else:
+        raise ValueError(f"Unsupported file format: '{ext}'. Only PDF and DOCX are accepted.")

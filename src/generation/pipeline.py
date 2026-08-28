@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from src.generation.questions import generate_interview_questions
 from src.generation.summary import generate_candidate_summary
 from src.generation.feedback import generate_feedback
@@ -6,25 +7,27 @@ from src.generation.feedback import generate_feedback
 def generate_interview_package(jd_text: str, matched_skills: list[str],
                                 missing_skills: list[str], final_score: float) -> dict:
     """
-    Generates all three outputs. Each is wrapped independently so that if
-    one LLM call fails (rate limit exhausted, network drop, etc.), the
-    other two still succeed instead of the whole package being lost.
+    Generates all three outputs concurrently via a thread pool.
+
+    Each task is independently wrapped so that if one LLM call fails
+    (rate limit, network drop, etc.), the other two still succeed.
+    The thread pool fires all 3 Groq requests simultaneously, cutting
+    total latency from ~3× to ~1× a single Groq round-trip.
     """
-    package = {}
+    tasks = {
+        "questions": lambda: generate_interview_questions(jd_text, matched_skills, missing_skills),
+        "summary":   lambda: generate_candidate_summary(jd_text, matched_skills, missing_skills, final_score),
+        "feedback":  lambda: generate_feedback(matched_skills, missing_skills),
+    }
 
-    try:
-        package["questions"] = generate_interview_questions(jd_text, matched_skills, missing_skills)
-    except Exception as e:
-        package["questions"] = f"[Could not generate interview questions: {e}]"
+    package: dict[str, str] = {}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(fn): key for key, fn in tasks.items()}
+        for future in as_completed(futures):
+            key = futures[future]
+            try:
+                package[key] = future.result()
+            except Exception as e:
+                package[key] = f"[Could not generate {key}: {e}]"
 
-    try:
-        package["summary"] = generate_candidate_summary(jd_text, matched_skills, missing_skills, final_score)
-    except Exception as e:
-        package["summary"] = f"[Could not generate candidate summary: {e}]"
-
-    try:
-        package["feedback"] = generate_feedback(matched_skills, missing_skills)
-    except Exception as e:
-        package["feedback"] = f"[Could not generate feedback: {e}]"
-
-    return package
+    return package

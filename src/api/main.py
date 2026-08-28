@@ -1,10 +1,11 @@
 import json, os
-from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, UploadFile, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, EmailStr
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 import csv
 import io
@@ -14,7 +15,7 @@ from src.db.database import get_db, init_db
 from src.db.models import Job, Candidate, User
 from src.auth.dependencies import get_current_user
 from src.api.auth_routes import router as auth_router
-from src.parsing.extract import extract_resume_text, PDFExtractionError
+from src.parsing.extract import extract_resume_text_bytes, PDFExtractionError
 from src.parsing.clean import normalize_text
 from src.parsing.candidate_info import extract_candidate_info
 from src.nlp.skill_extraction import load_skills_db, build_matcher, extract_skills
@@ -24,12 +25,14 @@ from src.generation.pipeline import generate_interview_package
 from src.notifications.email import send_shortlist_email
 
 app = FastAPI(title="AI Recruitment API")
+# GZip compresses JSON responses >1 KB — reduces bandwidth on job/candidate lists
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://recruitpro-ai-six.vercel.app",  
+        "https://recruitpro-ai-six.vercel.app",
     ],
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+)(:\d+)?",
     allow_methods=["*"],
@@ -70,21 +73,20 @@ def _get_owned_job(job_id: int, user: User, db):
     return job
 
 
-def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None):
-
+def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None, jd_skills=None):
+    """
+    Process one resume entirely in memory — no temp files written to disk.
+    jd_embedding and jd_skills are pre-computed once per upload batch and
+    passed in so they are not recalculated for every resume in a bulk upload.
+    """
     ext = os.path.splitext(filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise ValueError(f"Unsupported file type '{ext}'. Only PDF and DOCX are accepted.")
     if len(file_bytes) > MAX_FILE_SIZE_MB * 1024 * 1024:
         raise ValueError(f"File exceeds {MAX_FILE_SIZE_MB}MB limit.")
 
-    os.makedirs("data/uploads", exist_ok=True)
-    temp_path = f"data/uploads/{datetime.now().strftime('%Y%m%d%H%M%S%f')}_{filename}"
-    with open(temp_path, "wb") as f:
-        f.write(file_bytes)
-
     try:
-        raw = normalize_text(extract_resume_text(temp_path))
+        raw = normalize_text(extract_resume_text_bytes(file_bytes, ext))
     except (PDFExtractionError, ValueError) as e:
         raise ValueError(f"Could not process resume: {e}")
 
@@ -92,7 +94,9 @@ def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None
     candidate_name = candidate_info["name"] or "Unknown Candidate"
     candidate_email = candidate_info["email"]
 
-    jd_skills = extract_skills(job.jd_text, _matcher)
+    # jd_skills is pre-computed for bulk uploads; fall back for single-resume paths
+    if jd_skills is None:
+        jd_skills = extract_skills(job.jd_text, _matcher)
     found = extract_skills(raw, _matcher)
     matched = sorted(found & jd_skills)
     missing = sorted(jd_skills - found)
@@ -128,12 +132,31 @@ def extract_job_skills(payload: SkillExtractionRequest, user: User = Depends(get
 
 @app.get("/jobs")
 def list_jobs(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    # Compute candidate stats via a single SQL aggregation query instead of
+    # loading all Candidate ORM objects into Python memory.
+    stats_q = (
+        db.query(
+            Candidate.job_id,
+            func.count(Candidate.id).label("cnt"),
+            func.avg(Candidate.final_score).label("avg"),
+            func.max(Candidate.final_score).label("top"),
+        )
+        .group_by(Candidate.job_id)
+        .all()
+    )
+    stats = {row.job_id: row for row in stats_q}
+
     jobs = db.query(Job).filter(Job.created_by == user.id).order_by(Job.created_at.desc()).all()
-    return [{"id": j.id, "title": j.title, "jd_text": j.jd_text,
-             "detected_skills": _job_skills(j.jd_text), "created_at": j.created_at,
-             "candidate_count": len(j.candidates),
-             "avg_score": round(sum(c.final_score or 0 for c in j.candidates) / len(j.candidates), 2) if j.candidates else 0,
-             "top_score": max((c.final_score or 0 for c in j.candidates), default=0)} for j in jobs]
+    return [
+        {
+            "id": j.id, "title": j.title, "jd_text": j.jd_text,
+            "detected_skills": _job_skills(j.jd_text), "created_at": j.created_at,
+            "candidate_count": stats[j.id].cnt if j.id in stats else 0,
+            "avg_score": round(stats[j.id].avg or 0, 2) if j.id in stats else 0,
+            "top_score": round(stats[j.id].top or 0, 3) if j.id in stats else 0,
+        }
+        for j in jobs
+    ]
 
 @app.get("/jobs/{job_id}")
 def get_job(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
@@ -152,10 +175,13 @@ async def upload_resumes_bulk(job_id: int, files: list[UploadFile], db: Session 
                                user: User = Depends(get_current_user)):
     job = _get_owned_job(job_id, user, db)
     results = {"succeeded": [], "failed": []}
+    # Compute JD embedding and skills ONCE for the whole batch
     jd_embedding = embed_text(job.jd_text) if job.jd_text.strip() else None
+    jd_skills = extract_skills(job.jd_text, _matcher)
     for file in files:
         try:
-            c = _validate_and_score(db, job, file.filename, await file.read(), "manual", jd_embedding)
+            c = _validate_and_score(db, job, file.filename, await file.read(),
+                                    "manual", jd_embedding=jd_embedding, jd_skills=jd_skills)
             results["succeeded"].append({"id": c.id, "name": c.name, "email": c.email,
                                          "resume_filename": c.resume_filename, "final_score": c.final_score})
         except ValueError as e:
@@ -174,9 +200,22 @@ async def public_apply(job_id: int, file: UploadFile, db: Session = Depends(get_
     return {"message": "Application received. Thank you for applying!"}
 
 @app.get("/jobs/{job_id}/candidates")
-def get_ranked_candidates(job_id: int, min_score: Optional[float] = Query(None, ge=0, le=1),
-                           status: Optional[str] = None, sort_by: str = "final_score",
-                           order: str = "desc", db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def get_ranked_candidates(
+    job_id: int,
+    min_score: Optional[float] = Query(None, ge=0, le=1),
+    status: Optional[str] = None,
+    sort_by: str = "final_score",
+    order: str = "desc",
+    include_details: bool = Query(False, description="Include full candidate detail fields in list response"),
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """
+    Returns ranked candidates for a job.
+    Pass include_details=true to embed all detail fields (summary, questions,
+    feedback, scores, notes, resume_text) directly in the list response,
+    eliminating the need for per-candidate GET /candidates/{id} calls.
+    """
     _get_owned_job(job_id, user, db)
     q = db.query(Candidate).filter(Candidate.job_id == job_id)
     if min_score is not None:
@@ -185,9 +224,32 @@ def get_ranked_candidates(job_id: int, min_score: Optional[float] = Query(None, 
         q = q.filter(Candidate.status == status)
     sort_col = getattr(Candidate, sort_by)
     q = q.order_by(sort_col.desc() if order == "desc" else sort_col.asc())
-    return [{"id": c.id, "name": c.name, "email": c.email, "resume_filename": c.resume_filename,
-             "source": c.source, "final_score": c.final_score,
-             "status": c.status, "matched_skills": json.loads(c.matched_skills or "[]")} for c in q.all()]
+    candidates = q.all()
+
+    if include_details:
+        return [
+            {
+                "id": c.id, "name": c.name, "email": c.email,
+                "resume_filename": c.resume_filename, "source": c.source,
+                "final_score": c.final_score, "status": c.status, "notes": c.notes or "",
+                "resume_text": c.raw_text or "",
+                "skill_match_ratio": c.skill_match_ratio, "tfidf_similarity": c.tfidf_similarity,
+                "semantic_similarity": c.semantic_similarity,
+                "matched_skills": json.loads(c.matched_skills or "[]"),
+                "missing_skills": json.loads(c.missing_skills or "[]"),
+                "summary": c.summary, "questions": c.questions, "feedback": c.feedback,
+            }
+            for c in candidates
+        ]
+
+    return [
+        {
+            "id": c.id, "name": c.name, "email": c.email, "resume_filename": c.resume_filename,
+            "source": c.source, "final_score": c.final_score,
+            "status": c.status, "matched_skills": json.loads(c.matched_skills or "[]"),
+        }
+        for c in candidates
+    ]
 
 @app.get("/candidates/{candidate_id}")
 def get_candidate_detail(candidate_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
