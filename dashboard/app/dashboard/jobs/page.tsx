@@ -8,7 +8,7 @@ import { formatDate, getStatusColor } from '@/lib/utils';
 import { JobStatus } from '@/lib/types';
 
 export default function JobsListPage() {
-  const { jobs } = useData();
+  const { jobs, updateJobStatus } = useData();
   const [filter, setFilter] = useState<'All' | JobStatus>('All');
   const [search, setSearch] = useState('');
 
@@ -71,16 +71,31 @@ export default function JobsListPage() {
                   <span><MapPin size={12} /> {job.location}</span>
                 </div>
               </div>
-              <span
-                className="status-badge"
-                style={{
-                  background: `${getStatusColor(job.status)}15`,
-                  color: getStatusColor(job.status),
-                }}
-              >
-                <span className="status-dot" style={{ background: getStatusColor(job.status) }} />
-                {job.status}
-              </span>
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                <select
+                  className="status-select"
+                  value={job.status}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateJobStatus(job.id, e.target.value as JobStatus);
+                  }}
+                  style={{
+                    borderColor: getStatusColor(job.status),
+                    color: getStatusColor(job.status),
+                    background: `${getStatusColor(job.status)}15`,
+                    fontWeight: 600,
+                    fontSize: '0.8rem',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="Active">Active</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
             </div>
 
             <div className="job-card-skills">

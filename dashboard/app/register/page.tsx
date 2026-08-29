@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Mail, Lock, User, Building, ArrowRight, CheckCircle2, Circle, Loader2 } from 'lucide-react';
-import { useData } from '@/lib/DataContext';
+import { API_BASE, useData } from '@/lib/DataContext';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -20,6 +20,11 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const { register } = useData();
 
+  useEffect(() => {
+    // Pre-warm backend container on register page mount
+    fetch(`${API_BASE}/docs`).catch(() => {});
+  }, []);
+
   // Password requirement checks
   const passwordChecks = useMemo(() => ({
     minLength: formData.password.length >= 8,
@@ -33,6 +38,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setSubmitted(true);
     setError('');
 
@@ -182,6 +188,11 @@ export default function RegisterPage() {
             >
               {loading ? <Loader2 className="animate-spin" size={18} /> : 'Get Started Free'} <ArrowRight size={18} />
             </button>
+            {loading && (
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '8px', textAlign: 'center' }}>
+                Connecting to server — this can take up to a minute if it&apos;s been idle...
+              </p>
+            )}
           </form>
 
           <p className="auth-switch" style={{ marginTop: '24px' }}>

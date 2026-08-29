@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
@@ -17,12 +17,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useData();
 
+  useEffect(() => {
+    // Fire-and-forget health-check request to wake cold backend container early
+    fetch(`${API_BASE}/docs`).catch(() => {});
+  }, []);
+
   const startOAuth = (provider: 'google' | 'linkedin') => {
     window.location.href = `${API_BASE}/auth/${provider}/login`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setError('');
     setLoading(true);
     try {
@@ -93,6 +99,11 @@ export default function LoginPage() {
             <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>
               {loading ? <Loader2 className="animate-spin" size={18} /> : 'Sign In'} <ArrowRight size={18} />
             </button>
+            {loading && (
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '8px', textAlign: 'center' }}>
+                Connecting to server — this can take up to a minute if it&apos;s been idle...
+              </p>
+            )}
           </form>
 
           <div className="social-divider">

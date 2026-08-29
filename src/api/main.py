@@ -50,6 +50,12 @@ MAX_FILE_SIZE_MB = 8
 class JobCreate(BaseModel):
     title: str
     jd_text: str
+    status: Optional[str] = "Active"
+
+class JobUpdate(BaseModel):
+    status: Optional[str] = None
+    title: Optional[str] = None
+    jd_text: Optional[str] = None
 
 class SkillExtractionRequest(BaseModel):
     jd_text: str
@@ -121,9 +127,10 @@ def _validate_and_score(db, job, filename, file_bytes, source, jd_embedding=None
 def create_job(payload: JobCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     if not payload.title.strip() or not payload.jd_text.strip():
         raise HTTPException(400, "Job title and description cannot be empty.")
-    job = Job(title=payload.title.strip(), jd_text=payload.jd_text, created_by=user.id)
+    job_status = payload.status if payload.status in {"Active", "Draft", "Closed"} else "Active"
+    job = Job(title=payload.title.strip(), jd_text=payload.jd_text, status=job_status, created_by=user.id)
     db.add(job); db.commit(); db.refresh(job)
-    return {"id": job.id, "title": job.title, "jd_text": job.jd_text,
+    return {"id": job.id, "title": job.title, "jd_text": job.jd_text, "status": job.status,
             "detected_skills": _job_skills(job.jd_text), "created_at": job.created_at}
 
 @app.post("/skills/extract")
@@ -149,7 +156,7 @@ def list_jobs(db: Session = Depends(get_db), user: User = Depends(get_current_us
     jobs = db.query(Job).filter(Job.created_by == user.id).order_by(Job.created_at.desc()).all()
     return [
         {
-            "id": j.id, "title": j.title, "jd_text": j.jd_text,
+            "id": j.id, "title": j.title, "jd_text": j.jd_text, "status": j.status or "Active",
             "detected_skills": _job_skills(j.jd_text), "created_at": j.created_at,
             "candidate_count": stats[j.id].cnt if j.id in stats else 0,
             "avg_score": round(stats[j.id].avg or 0, 2) if j.id in stats else 0,
@@ -161,8 +168,26 @@ def list_jobs(db: Session = Depends(get_db), user: User = Depends(get_current_us
 @app.get("/jobs/{job_id}")
 def get_job(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     job = _get_owned_job(job_id, user, db)
-    return {"id": job.id, "title": job.title, "jd_text": job.jd_text,
+    return {"id": job.id, "title": job.title, "jd_text": job.jd_text, "status": job.status or "Active",
         "detected_skills": _job_skills(job.jd_text), "created_at": job.created_at}
+
+@app.patch("/jobs/{job_id}")
+def update_job(job_id: int, payload: JobUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    job = _get_owned_job(job_id, user, db)
+    valid_statuses = {"Active", "Draft", "Closed"}
+    if payload.status is not None:
+        if payload.status not in valid_statuses:
+            raise HTTPException(400, f"Status must be one of {sorted(valid_statuses)}.")
+        job.status = payload.status
+    if payload.title is not None and payload.title.strip():
+        job.title = payload.title.strip()
+    if payload.jd_text is not None and payload.jd_text.strip():
+        job.jd_text = payload.jd_text
+    db.commit(); db.refresh(job)
+    return {
+        "id": job.id, "title": job.title, "jd_text": job.jd_text, "status": job.status or "Active",
+        "detected_skills": _job_skills(job.jd_text), "created_at": job.created_at
+    }
 
 @app.delete("/jobs/{job_id}")
 def delete_job(job_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

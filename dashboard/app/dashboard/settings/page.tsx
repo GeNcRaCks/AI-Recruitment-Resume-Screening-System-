@@ -1,13 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { User, Bell, Shield, Key, Sparkles, Check } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { User, Key, Sparkles, Check, Upload } from 'lucide-react';
 import { API_BASE, useData } from '@/lib/DataContext';
 
 export default function SettingsPage() {
   const { user, updateUser } = useData();
-  const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'api'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'api'>('profile');
   const [saved, setSaved] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedAvatar = localStorage.getItem('user_avatar');
+      if (savedAvatar) {
+        setAvatarUrl(savedAvatar);
+      }
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -15,11 +26,27 @@ export default function SettingsPage() {
     company: user?.company_name || '',
   });
 
-  const [toggles, setToggles] = useState({
-    emailNotifs: true,
-    scoreAlerts: true,
-    weeklyDigest: false,
-  });
+  const handleAvatarFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setAvatarUrl(result);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user_avatar', result);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +65,7 @@ export default function SettingsPage() {
         <div>
           <h1>Settings & Preferences</h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-            Manage your account settings, notification alerts, and API configuration.
+            Manage your account settings and API configuration.
           </p>
         </div>
       </div>
@@ -50,12 +77,6 @@ export default function SettingsPage() {
             onClick={() => setActiveTab('profile')}
           >
             <User size={18} /> Account Profile
-          </div>
-          <div 
-            className={`settings-nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
-            onClick={() => setActiveTab('notifications')}
-          >
-            <Bell size={18} /> Notifications
           </div>
           <div 
             className={`settings-nav-item ${activeTab === 'api' ? 'active' : ''}`}
@@ -73,11 +94,28 @@ export default function SettingsPage() {
                 <p className="section-desc">Update your personal and company information.</p>
 
                 <div className="settings-avatar-section">
-                  <div className="settings-avatar">
-                    {user?.name?.charAt(0) || 'U'}
+                  <div className="settings-avatar" style={{ overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      user?.name?.charAt(0) || 'U'
+                    )}
                   </div>
                   <div>
-                    <button className="btn btn-secondary btn-sm">Change Avatar</button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleAvatarFileSelect}
+                    />
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload size={14} style={{ marginRight: '6px' }} /> Change Avatar
+                    </button>
                   </div>
                 </div>
 
@@ -120,54 +158,6 @@ export default function SettingsPage() {
                     {saved && <span style={{ color: 'var(--color-success)', fontSize: '0.85rem' }}>✓ Changes saved</span>}
                   </div>
                 </form>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'notifications' && (
-            <div>
-              <div className="settings-section">
-                <h3>Notification Preferences</h3>
-                <p className="section-desc">Manage how and when you receive candidate updates.</p>
-
-                <div className="toggle-row">
-                  <div className="toggle-info">
-                    <h4>New Candidate Email Alerts</h4>
-                    <p>Receive email notifications when new resumes are submitted or uploaded.</p>
-                  </div>
-                  <div 
-                    className={`toggle-switch ${toggles.emailNotifs ? 'active' : ''}`}
-                    onClick={() => setToggles({ ...toggles, emailNotifs: !toggles.emailNotifs })}
-                  >
-                    <div className="toggle-thumb" />
-                  </div>
-                </div>
-
-                <div className="toggle-row">
-                  <div className="toggle-info">
-                    <h4>High-Score Candidate Alerts (&gt;0.8)</h4>
-                    <p>Get instant alerts when a candidate scores above 0.8 match score.</p>
-                  </div>
-                  <div 
-                    className={`toggle-switch ${toggles.scoreAlerts ? 'active' : ''}`}
-                    onClick={() => setToggles({ ...toggles, scoreAlerts: !toggles.scoreAlerts })}
-                  >
-                    <div className="toggle-thumb" />
-                  </div>
-                </div>
-
-                <div className="toggle-row">
-                  <div className="toggle-info">
-                    <h4>Weekly Recruitment Summary</h4>
-                    <p>Receive a weekly digest email summarizing candidate pipeline statistics.</p>
-                  </div>
-                  <div 
-                    className={`toggle-switch ${toggles.weeklyDigest ? 'active' : ''}`}
-                    onClick={() => setToggles({ ...toggles, weeklyDigest: !toggles.weeklyDigest })}
-                  >
-                    <div className="toggle-thumb" />
-                  </div>
-                </div>
               </div>
             </div>
           )}

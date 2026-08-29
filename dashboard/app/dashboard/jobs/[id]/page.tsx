@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useData } from '@/lib/DataContext';
 import { getScoreColor, getStatusColor, formatDate } from '@/lib/utils';
-import { CandidateStatus } from '@/lib/types';
+import { CandidateStatus, JobStatus } from '@/lib/types';
 import { 
   BarChart, 
   Bar, 
@@ -34,7 +34,7 @@ export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
-  const { getJob, getCandidatesForJob, updateCandidateStatus, addCandidatesToJob, deleteJob } = useData();
+  const { getJob, getCandidatesForJob, updateCandidateStatus, addCandidatesToJob, deleteJob, updateJobStatus } = useData();
 
   const job = getJob(jobId);
   const candidates = getCandidatesForJob(jobId);
@@ -149,12 +149,25 @@ export default function JobDetailPage() {
         <div className="job-detail-info">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <h1>{job.title}</h1>
-            <span 
-              className="status-badge" 
-              style={{ background: `${getStatusColor(job.status)}15`, color: getStatusColor(job.status) }}
+            <select
+              className="status-select"
+              value={job.status}
+              onChange={(e) => updateJobStatus(job.id, e.target.value as JobStatus)}
+              style={{
+                borderColor: getStatusColor(job.status),
+                color: getStatusColor(job.status),
+                background: `${getStatusColor(job.status)}15`,
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
             >
-              {job.status}
-            </span>
+              <option value="Active">Active</option>
+              <option value="Draft">Draft</option>
+              <option value="Closed">Closed</option>
+            </select>
           </div>
           <div className="job-detail-meta">
             <span><Briefcase size={14} /> {job.department}</span>

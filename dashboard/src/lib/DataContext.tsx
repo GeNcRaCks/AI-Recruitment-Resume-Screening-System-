@@ -51,6 +51,7 @@ interface ApiJob {
   id: number;
   title: string;
   jd_text?: string;
+  status?: string;
   detected_skills?: string[];
   candidate_count?: number;
   avg_score?: number;
@@ -139,7 +140,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           employmentType: 'Full-time',
           description: j.jd_text || '',
           detectedSkills: j.detected_skills || [],
-          status: 'Active',
+          status: (j.status as JobStatus) || 'Active',
           candidateCount: j.candidate_count,
           processedCount: j.candidate_count,
           avgScore: j.avg_score || 0,
@@ -315,6 +316,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateJobStatus = async (jobId: string, status: JobStatus) => {
+    const token = getToken();
+    const res = await fetch(`${API_BASE}/jobs/${jobId}`, {
+      method: "PATCH",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error("Failed to update job status");
     setJobs(prev => prev.map(j => j.id === jobId ? { ...j, status, updatedAt: new Date().toISOString() } : j));
   };
 

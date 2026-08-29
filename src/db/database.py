@@ -15,15 +15,17 @@ SessionLocal = sessionmaker(bind=engine)
 def init_db():
     Base.metadata.create_all(bind=engine)
     needs_backfill = False
-    if engine.dialect.name == "sqlite":
-        columns = {column["name"] for column in inspect(engine).get_columns("candidates")}
-        with engine.begin() as connection:
-            if "email" not in columns:
-                connection.execute(text("ALTER TABLE candidates ADD COLUMN email VARCHAR"))
-                needs_backfill = True
-            if "resume_filename" not in columns:
-                connection.execute(text("ALTER TABLE candidates ADD COLUMN resume_filename VARCHAR"))
-                needs_backfill = True
+    candidate_columns = {column["name"] for column in inspect(engine).get_columns("candidates")} if inspect(engine).has_table("candidates") else set()
+    job_columns = {column["name"] for column in inspect(engine).get_columns("jobs")} if inspect(engine).has_table("jobs") else set()
+    with engine.begin() as connection:
+        if "email" not in candidate_columns:
+            connection.execute(text("ALTER TABLE candidates ADD COLUMN email VARCHAR"))
+            needs_backfill = True
+        if "resume_filename" not in candidate_columns:
+            connection.execute(text("ALTER TABLE candidates ADD COLUMN resume_filename VARCHAR"))
+            needs_backfill = True
+        if "status" not in job_columns:
+            connection.execute(text("ALTER TABLE jobs ADD COLUMN status VARCHAR DEFAULT 'Active'"))
 
     # Only run the expensive per-row backfill when columns were just added
     # for the first time. On every subsequent startup this is skipped entirely.

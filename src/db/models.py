@@ -20,6 +20,7 @@ class Job(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
     jd_text = Column(Text, nullable=False)
+    status = Column(String, default="Active")
     created_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     candidates = relationship("Candidate", back_populates="job", cascade="all, delete-orphan")
