@@ -1,14 +1,20 @@
-import json, os
+import csv
+import io
+import json
+import os
+import re
+import time
+from collections import defaultdict, deque
 from typing import Optional
-from fastapi import FastAPI, UploadFile, Depends, HTTPException, Query
+
+from fastapi import FastAPI, Request, UploadFile, Depends, HTTPException, Query
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-import csv
-import io
 from fpdf import FPDF
 
 from src.db.database import get_db, init_db
@@ -25,6 +31,8 @@ from src.generation.pipeline import generate_interview_package
 from src.notifications.email import send_shortlist_email
 
 app = FastAPI(title="AI Recruitment API")
+app.state.rate_limit_store = defaultdict(deque)
+
 # GZip compresses JSON responses >1 KB — reduces bandwidth on job/candidate lists
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
@@ -38,6 +46,44 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    is_auth = path in {"/auth/login", "/auth/register", "/auth/forgot-password"}
+    is_upload = path.endswith("/upload-resumes") or path.endswith("/apply")
+    if is_auth or is_upload:
+        now = time.monotonic()
+        key = f"{request.client.host if request.client else 'unknown'}::{path}"
+        bucket = app.state.rate_limit_store[key]
+        window_seconds = 60
+        max_requests = 10 if is_upload else 5
+        while bucket and now - bucket[0] > window_seconds:
+            bucket.popleft()
+        if len(bucket) >= max_requests:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Too many requests. Please wait a moment and try again."},
+            )
+        bucket.append(now)
+    return await call_next(request)
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(_, exc: HTTPException):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_, exc: RequestValidationError):
+    return JSONResponse(status_code=422, content={"detail": "Invalid request payload."})
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(_, __):
+    return JSONResponse(status_code=500, content={"detail": "An unexpected server error occurred."})
+
 app.include_router(auth_router)
 
 init_db()
@@ -45,7 +91,39 @@ _skills_db = load_skills_db()
 _matcher = build_matcher(_skills_db)
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx"}
+ALLOWED_MIME_TYPES = {
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+}
 MAX_FILE_SIZE_MB = 8
+
+
+def _safe_resume_filename(filename: str) -> str:
+    candidate = (filename or "resume").strip()
+    candidate = candidate.replace("\\", "/")
+    candidate = os.path.basename(candidate)
+    candidate = re.sub(r"[^A-Za-z0-9._-]", "_", candidate)
+    candidate = re.sub(r"_+", "_", candidate).strip("._")
+    if not candidate:
+        return "resume"
+    return candidate
+
+
+async def _read_uploaded_resume(file: UploadFile) -> tuple[str, bytes]:
+    raw_name = _safe_resume_filename(file.filename or "resume")
+    ext = os.path.splitext(raw_name)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise ValueError(f"Unsupported file type '{ext}'. Only PDF and DOCX are accepted.")
+
+    content_type = (file.content_type or "").lower()
+    expected_type = ALLOWED_MIME_TYPES.get(ext)
+    if expected_type and content_type and content_type != expected_type:
+        raise ValueError("Uploaded file MIME type does not match the file extension.")
+
+    file_bytes = await file.read()
+    if len(file_bytes) > MAX_FILE_SIZE_MB * 1024 * 1024:
+        raise ValueError(f"File exceeds {MAX_FILE_SIZE_MB}MB limit.")
+    return raw_name, file_bytes
 
 class JobCreate(BaseModel):
     title: str
@@ -200,17 +278,16 @@ async def upload_resumes_bulk(job_id: int, files: list[UploadFile], db: Session 
                                user: User = Depends(get_current_user)):
     job = _get_owned_job(job_id, user, db)
     results = {"succeeded": [], "failed": []}
-    # Compute JD embedding and skills ONCE for the whole batch
     jd_embedding = embed_text(job.jd_text) if job.jd_text.strip() else None
     jd_skills = extract_skills(job.jd_text, _matcher)
     for file in files:
         try:
-            c = _validate_and_score(db, job, file.filename, await file.read(),
-                                    "manual", jd_embedding=jd_embedding, jd_skills=jd_skills)
+            safe_name, file_bytes = await _read_uploaded_resume(file)
+            c = _validate_and_score(db, job, safe_name, file_bytes, "manual", jd_embedding=jd_embedding, jd_skills=jd_skills)
             results["succeeded"].append({"id": c.id, "name": c.name, "email": c.email,
                                          "resume_filename": c.resume_filename, "final_score": c.final_score})
         except ValueError as e:
-            results["failed"].append({"name": file.filename, "error": str(e)})
+            results["failed"].append({"name": _safe_resume_filename(file.filename or "resume"), "error": str(e)})
     return results
 
 @app.post("/public/jobs/{job_id}/apply")
@@ -219,7 +296,8 @@ async def public_apply(job_id: int, file: UploadFile, db: Session = Depends(get_
     if not job:
         raise HTTPException(404, "This job posting is no longer available.")
     try:
-        _validate_and_score(db, job, file.filename, await file.read(), "public_application")
+        safe_name, file_bytes = await _read_uploaded_resume(file)
+        _validate_and_score(db, job, safe_name, file_bytes, "public_application")
     except ValueError as e:
         raise HTTPException(422, str(e))
     return {"message": "Application received. Thank you for applying!"}

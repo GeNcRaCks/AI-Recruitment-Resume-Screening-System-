@@ -16,6 +16,8 @@ from src.auth.security import hash_password, verify_password, create_access_toke
 from src.auth.dependencies import get_current_user
 from src.auth.security import JWT_SECRET
 
+from src.notifications.email import send_system_email
+
 load_dotenv()
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -23,6 +25,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 OAUTH_STATE_MAX_AGE = 600
 _state_serializer = URLSafeTimedSerializer(JWT_SECRET, salt="oauth-state")
+_reset_serializer = URLSafeTimedSerializer(JWT_SECRET, salt="password-reset")
+_verify_serializer = URLSafeTimedSerializer(JWT_SECRET, salt="email-verify")
 
 OAUTH_PROVIDERS = {
     "google": {
@@ -185,3 +189,104 @@ def update_me(payload: UpdateProfileRequest, current_user: User = Depends(get_cu
         current_user.company_name = payload.company_name
     db.commit(); db.refresh(current_user)
     return {"id": current_user.id, "name": current_user.name, "company_name": current_user.company_name}
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8)
+
+class VerifyEmailRequest(BaseModel):
+    token: str
+
+
+@router.post("/forgot-password")
+def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email.lower().strip()).first()
+    if user:
+        token = _reset_serializer.dumps({"user_id": user.id, "email": user.email})
+        reset_link = f"{FRONTEND_URL}/reset-password?token={token}"
+        body = (
+            f"Hello {user.name or 'Recruiter'},\n\n"
+            f"We received a request to reset your RecruitPro AI password.\n"
+            f"Click the link below to set a new password:\n\n"
+            f"{reset_link}\n\n"
+            f"This link will expire in 1 hour. If you did not request this, please ignore this email.\n"
+        )
+        try:
+            send_system_email([user.email], "Reset Your RecruitPro AI Password", body)
+        except Exception:
+            pass
+    return {"message": "If an account exists for this email, password reset instructions have been sent."}
+
+
+@router.post("/reset-password")
+def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+    try:
+        data = _reset_serializer.loads(payload.token, max_age=3600)
+    except SignatureExpired:
+        raise HTTPException(400, "Password reset token has expired. Please request a new link.")
+    except BadSignature:
+        raise HTTPException(400, "Invalid password reset token.")
+
+    user_id = data.get("user_id")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(404, "User account not found.")
+
+    user.hashed_password = hash_password(payload.new_password)
+    db.commit()
+    return {"message": "Password has been successfully reset. You can now log in."}
+
+
+@router.post("/send-verification")
+def send_verification_email(current_user: User = Depends(get_current_user)):
+    if current_user.is_verified:
+        return {"message": "Account is already verified."}
+    
+    token = _verify_serializer.dumps({"user_id": current_user.id, "email": current_user.email})
+    verify_link = f"{FRONTEND_URL}/verify-email?token={token}"
+    body = (
+        f"Hello {current_user.name or 'Recruiter'},\n\n"
+        f"Please verify your email address for RecruitPro AI by clicking the link below:\n\n"
+        f"{verify_link}\n\n"
+        f"This link will expire in 24 hours.\n"
+    )
+    try:
+        send_system_email([current_user.email], "Verify Your RecruitPro AI Account", body)
+    except Exception as e:
+        raise HTTPException(500, f"Failed to send verification email: {str(e)}")
+
+    return {"message": "Verification email sent."}
+
+
+@router.post("/resend-verification")
+def resend_verification_email(current_user: User = Depends(get_current_user)):
+    return send_verification_email(current_user=current_user)
+
+
+@router.post("/verify-email")
+def verify_email(payload: VerifyEmailRequest, db: Session = Depends(get_db)):
+    try:
+        data = _verify_serializer.loads(payload.token, max_age=86400)
+    except SignatureExpired:
+        raise HTTPException(400, "Verification link has expired. Please request a new verification email.")
+    except BadSignature:
+        raise HTTPException(400, "Invalid verification token.")
+
+    user = db.query(User).filter(User.id == data.get("user_id")).first()
+    if not user:
+        raise HTTPException(404, "User account not found.")
+
+    user.is_verified = True
+    db.commit()
+    return {"message": "Email address verified successfully!"}
+
+
+@router.delete("/me")
+def delete_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    db.delete(current_user)
+    db.commit()
+    return {"message": "Account and associated data deleted successfully."}
