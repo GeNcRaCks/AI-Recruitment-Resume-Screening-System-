@@ -47,7 +47,7 @@ export default function LoginPage() {
         <div className="auth-form-container">
           <Link href="/" className="nav-logo">
             <div className="nav-logo-icon">
-              <Sparkles size={20} />
+              <img src="/recruitpro-logo.svg" alt="RecruitPro AI logo" />
             </div>
             <span>RecruitPro AI</span>
           </Link>
@@ -74,7 +74,7 @@ export default function LoginPage() {
             <div className="form-group">
               <div className="form-footer">
                 <label className="form-label" style={{ margin: 0 }}>Password</label>
-                <a href="#">Forgot password?</a>
+                <Link href="/forgot-password">Forgot password?</Link>
               </div>
               <div className="form-input-icon">
                 <Lock size={18} className="input-icon" />

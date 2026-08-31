@@ -8,15 +8,15 @@
 
 /* ─── CSS Variables (Design Tokens) ───────────────────────── */
 :root {
-  /* Primary palette — indigo/purple */
-  --color-primary: #6c5ce7;
-  --color-primary-hover: #5a4bd1;
-  --color-primary-light: #e8e5fc;
-  --color-primary-lighter: #f3f1fe;
-  --color-primary-dark: #4a3db0;
+  /* Primary palette — stronger blue/purple modern brand */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-light: #e7e7ff;
+  --color-primary-lighter: #f3f4ff;
+  --color-primary-dark: #312e81;
 
   /* Accent */
-  --color-accent: #a855f7;
+  --color-accent: #7c3aed;
   --color-accent-light: #f3e8ff;
 
   /* Semantic */
@@ -26,18 +26,18 @@
   --color-warning-light: #fef3c7;
   --color-error: #ef4444;
   --color-error-light: #fee2e2;
-  --color-info: #3b82f6;
+  --color-info: #2563eb;
   --color-info-light: #dbeafe;
 
   /* Neutrals */
-  --color-bg: #f8f9fb;
+  --color-bg: #f3f4f6;
   --color-bg-white: #ffffff;
-  --color-bg-subtle: #f1f3f9;
-  --color-border: #e5e7eb;
-  --color-border-light: #f0f1f4;
-  --color-text: #1a1d26;
-  --color-text-secondary: #6b7280;
-  --color-text-tertiary: #9ca3af;
+  --color-bg-subtle: #eef2ff;
+  --color-border: #dfe3ec;
+  --color-border-light: #e7ebf3;
+  --color-text: #111827;
+  --color-text-secondary: #374151;
+  --color-text-tertiary: #6b7280;
   --color-text-inverse: #ffffff;
 
   /* Sidebar */
@@ -93,6 +93,16 @@ body {
   line-height: 1.6;
   color: var(--color-text);
   background: var(--color-bg);
+  text-rendering: optimizeLegibility;
+}
+
+p, li, label, input, button {
+  color: var(--color-text);
+}
+
+/* Exempt sidebar from global text color override */
+.sidebar, .sidebar * {
+  color: inherit;
 }
 
 a {
@@ -174,12 +184,20 @@ h5 { font-size: 1rem; }
 .nav-logo-icon {
   width: 36px;
   height: 36px;
-  background: var(--color-primary);
-  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f1d8f 0%, #1e9eea 100%);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+}
+
+.nav-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .nav-links {
@@ -191,7 +209,7 @@ h5 { font-size: 1rem; }
 
 .nav-links a {
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-text-secondary);
   transition: color var(--transition-fast);
 }
@@ -1056,6 +1074,14 @@ h5 { font-size: 1rem; }
   justify-content: center;
   color: white;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sidebar-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .sidebar-brand {

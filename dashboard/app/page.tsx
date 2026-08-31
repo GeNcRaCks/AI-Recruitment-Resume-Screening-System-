@@ -29,7 +29,7 @@ export default function LandingPage() {
       <nav className={`landing-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="nav-logo">
           <div className="nav-logo-icon">
-            <Sparkles size={20} />
+            <img src="/recruitpro-logo.svg" alt="RecruitPro AI logo" />
           </div>
           <span>RecruitPro AI</span>
         </div>
@@ -46,7 +46,7 @@ export default function LandingPage() {
           <li><a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a></li>
           <li><a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</a></li>
           <li><a href="#testimonials" onClick={() => setMobileMenuOpen(false)}>Reviews</a></li>
-          <li><a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a></li>
+          <li><Link href="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</Link></li>
         </ul>
 
         <div className={`nav-actions ${mobileMenuOpen ? 'mobile-visible' : ''}`}>
@@ -307,6 +307,7 @@ export default function LandingPage() {
             <ul>
               <li><a href="#features">Features</a></li>
               <li><a href="#how-it-works">How It Works</a></li>
+              <li><Link href="/pricing">Pricing</Link></li>
               <li><Link href="/dashboard">Dashboard</Link></li>
             </ul>
           </div>
@@ -314,17 +315,17 @@ export default function LandingPage() {
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><a href="#features">About Us</a></li>
+              <li><Link href="/register">Careers</Link></li>
+              <li><a href="mailto:recruitpro.notifications@gmail.com">Contact</a></li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h4>Legal</h4>
             <ul>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
+              <li><Link href="/privacy">Privacy Policy</Link></li>
+              <li><Link href="/terms">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
@@ -333,6 +334,40 @@ export default function LandingPage() {
           © {new Date().getFullYear()} RecruitPro AI. All rights reserved.
         </div>
       </footer>
+
+      {/* Structured Data (JSON-LD) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+              {
+                '@type': 'WebApplication',
+                '@id': 'https://recruitpro-ai-six.vercel.app/#webapp',
+                'name': 'RecruitPro AI',
+                'url': 'https://recruitpro-ai-six.vercel.app',
+                'applicationCategory': 'BusinessApplication',
+                'operatingSystem': 'All',
+                'description': 'Automate candidate screening, rank resumes using multi-model NLP, and generate tailored interview questions.',
+                'offers': {
+                  '@type': 'Offer',
+                  'price': '0',
+                  'priceCurrency': 'USD',
+                },
+              },
+              {
+                '@type': 'Organization',
+                '@id': 'https://recruitpro-ai-six.vercel.app/#organization',
+                'name': 'RecruitPro AI',
+                'url': 'https://recruitpro-ai-six.vercel.app',
+                'email': 'recruitpro.notifications@gmail.com',
+                'logo': 'https://recruitpro-ai-six.vercel.app/og-image.png',
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }

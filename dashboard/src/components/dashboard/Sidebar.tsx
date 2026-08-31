@@ -14,7 +14,6 @@ import {
   UploadCloud, 
   BarChart3, 
   Settings, 
-  Sparkles, 
   LogOut,
   X
 } from 'lucide-react';
@@ -45,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo-icon">
-          <Sparkles size={20} />
+          <img src="/recruitpro-logo.svg" alt="RecruitPro AI logo" />
         </div>
         <span className="sidebar-brand">RecruitPro AI</span>
         

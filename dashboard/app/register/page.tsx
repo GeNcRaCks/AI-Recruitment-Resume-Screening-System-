@@ -66,7 +66,7 @@ export default function RegisterPage() {
         <div className="auth-form-container">
           <Link href="/" className="nav-logo">
             <div className="nav-logo-icon">
-              <Sparkles size={20} />
+              <img src="/recruitpro-logo.svg" alt="RecruitPro AI logo" />
             </div>
             <span>RecruitPro AI</span>
           </Link>

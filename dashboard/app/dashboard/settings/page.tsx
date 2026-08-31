@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Key, Sparkles, Check, Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { User, Key, Sparkles, Check, Upload, Trash2 } from 'lucide-react';
 import { API_BASE, useData } from '@/lib/DataContext';
 
 export default function SettingsPage() {
-  const { user, updateUser } = useData();
+  const router = useRouter();
+  const { user, updateUser, logout } = useData();
   const [activeTab, setActiveTab] = useState<'profile' | 'api'>('profile');
   const [saved, setSaved] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -56,6 +58,27 @@ export default function SettingsPage() {
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       console.error("Failed to update user", err);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('This will permanently delete your account and all associated job data. This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.detail || 'Failed to delete account');
+      }
+      logout();
+      router.push('/login');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete account');
     }
   };
 
@@ -151,9 +174,17 @@ export default function SettingsPage() {
                     />
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
                     <button type="submit" className="btn btn-primary">
                       Save Changes
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleDeleteAccount}
+                      style={{ borderColor: 'rgba(239, 68, 68, 0.5)', color: '#fca5a5' }}
+                    >
+                      <Trash2 size={14} style={{ marginRight: '6px' }} /> Delete Account
                     </button>
                     {saved && <span style={{ color: 'var(--color-success)', fontSize: '0.85rem' }}>✓ Changes saved</span>}
                   </div>

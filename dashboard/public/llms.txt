@@ -1,0 +1,21 @@
+# RecruitPro AI
+
+> Smart AI Resume Screening & Candidate Ranking Platform
+
+RecruitPro AI is an enterprise-grade AI recruitment software designed for recruiters, hiring managers, and HR teams to automate resume screening, rank candidates using multi-model NLP, extract matched vs missing skills, and generate candidate summaries and technical interview questions.
+
+## Product Purpose
+RecruitPro AI reduces candidate screening time by up to 80% through intelligent document parsing, TF-IDF lexical frequency analysis, sentence-transformer semantic embedding similarity (MiniLM), and automated interview question generation.
+
+## Core Features
+- Job Skill Extraction: Automatic detection of required technical and soft skills from job descriptions.
+- Bulk Resume Upload: Multi-file drag-and-drop processing for PDF and DOCX formats.
+- Composite Candidate Scoring: Multi-model matching using exact skill overlaps, TF-IDF similarity, and semantic vector embeddings.
+- AI Interview Package Generation: Auto-generated technical interview questions probing candidate skill gaps, along with concise neutral hiring recommendations.
+- Shortlist Export & Notifications: Candidate shortlisting exportable as PDF/CSV and report delivery via email.
+
+## Public Resources
+- Homepage: https://recruitpro-ai-six.vercel.app
+- Pricing: https://recruitpro-ai-six.vercel.app/pricing
+- Privacy Policy: https://recruitpro-ai-six.vercel.app/privacy
+- Terms of Service: https://recruitpro-ai-six.vercel.app/terms
